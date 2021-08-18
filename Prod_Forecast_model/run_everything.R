@@ -14,33 +14,34 @@ memory.limit(size=100000) #minimum needed to run default
 
 ## ---------- assembling data to run models ----------------
 
-# you only need to run these if you wish to run this model on a different spatial extent/resolution than the default provided
-# different spatial extents and resolutions can be downloaded using the following links:
-# RAP_gee_tiffs: https://code.earthengine.google.com/59e173e815628e7d4456a0fe923b0f45
-# Spatial_gee_tiffs: https://code.earthengine.google.com/8cdcbddfe310a0ed1a45e3cdde301c4e
-# Temporal_gee_tiffs: https://code.earthengine.google.com/85d90e7e2b994e26a3cfe0b1d810d34e
+# These scripts will download three tiffs from Google Earth Engine with all covariates used in Ensley-Field et al
+# The  spatial extent and resolution can be changed; a smaller extent and higher resolution will help this run faster
+
+# RAP_gee_tiffs: https://code.earthengine.google.com/f420637f5b5c5aea6ecd8a33d5595a69
+# Spatial_gee_tiffs: https://code.earthengine.google.com/8b80d2da195ca424158c951363411a4f
+# Temporal_gee_tiffs: https://code.earthengine.google.com/9675a988bb412e0475ee7a0bb31187a5
  
  
 # script to convert tiff files downloaded from GEE to csvs and formats csv files to include distinguishable date and variable names and columns.
 
-# source(file="model_assembly_scripts/spatial_data_script.R")
-# source(file= "model_assembly_scripts/RAP_data_script.R")
-# source(file= "model_assembly_scripts/temporal_data_script.R") #this takes a long time (hours) to run
+source(file="model_assembly_scripts/spatial_data_script.R")
+source(file= "model_assembly_scripts/RAP_data_script.R")
+source(file= "model_assembly_scripts/temporal_data_script.R") #this takes a long time (hours) to run
  
 # assembles final csv to use in productivity forecast models
 
-# source(file= "model_assembly_scripts/march_model_assemble.R")
+source(file= "model_assembly_scripts/march_model_assemble.R")
 
 # check data assembly
 
 #plausible values? correct time range?
-# mod_dat<-read.csv("gee_4cast_data/model_csvs/march_all_model_csv.csv")
-# head(mod_dat)
-# range(mod_dat$yr)
+mod_dat<-read.csv("gee_4cast_data/model_csvs/march_all_model_csv.csv")
+head(mod_dat)
+range(mod_dat$yr)
 # 
-# forecast_dat<-read.csv("gee_4cast_data/model_csvs/march_forecast_2021_csv.csv")
-# head(forecast_dat)
-# range(forecast_dat$yr)
+forecast_dat<-read.csv("gee_4cast_data/model_csvs/march_forecast_2021_csv.csv")
+head(forecast_dat)
+range(forecast_dat$yr)
 
 ## ---------- running models ----------------
 
