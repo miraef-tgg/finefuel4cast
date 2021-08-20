@@ -10,7 +10,7 @@ p_load(dplyr,tidyr,rstudioapi,stringr, ggplot2,tiff,raster,rgdal,spatialEco,  in
 # Set working directory to source file location (this method only works on Rstudio)
 current_folder <- dirname(getActiveDocumentContext()$path)
 setwd(current_folder)
-memory.limit(size=100000) #minimum needed to run default
+memory.limit(size=10000000000000000000) #some kind of bug thing happening
 
 ## ---------- assembling data to run models ----------------
 

@@ -21,7 +21,6 @@ if ( !exists(deparse(substitute(nIters))))(nIters<-500 )
 mod1_data<-subset(model_df, select=c(z_agb,prev_z_agb,yr, z_pr,z_tmmx,z_vpd,z_ndvi,pr_frac,
                                  prev_pfg_frac,z_ssm,z_bulk_dens,z_pr_z_ssm))
 
-dim(mod1_data)
 
 save_loc<-"/figures/march_vis/hindcast/"
 save_name<-"march_hindcast_lm"

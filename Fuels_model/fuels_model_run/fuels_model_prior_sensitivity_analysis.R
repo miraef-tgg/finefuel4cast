@@ -91,12 +91,14 @@ for ( v in 1:9){
                          "beta_mu"=beta_mu[i], "beta_sd"=beta_sd[i],
                          "sig_f"=sig_f[i])
 
-    fit1<-rstan::stan(model_code=code,data=stan.data.real,control=list(adapt_delta=.8),warmup=20000, iter=26000, chains=4,
+    fit1<-rstan::stan(model_code=code,data=stan.data.real,control=list(adapt_delta=.8),warmup=6000, iter=10000, chains=4,
                       save_warmup=F, refresh=0)
 
     saveRDS(fit1, paste0( "model_outputs/priors_sensitivity_analysis/", var_str, "/", var_str,"_",  var[i], ".rds"))
     print(summary(fit1)[[1]][c(1:4, 1168 ),c(1,10)])
     print(paste0("divergent iterations: " , sum(get_divergent_iterations(fit1))))
     print(paste0("time:",  sum(get_elapsed_time(fit1)[,1:2])/(60*60)))
+    rm(fit1)
+    gc()
   }
 }

@@ -21,7 +21,7 @@ make_m<-function(fuel_data2){
 }
 
 make_sim_data<-function(
-  nPlots=148,
+  nPlots=198,
   nYears=25,
   sig_o=.8, #fuel obs error
   sig_p=.6, # process error
@@ -59,11 +59,11 @@ make_sim_data<-function(
   
   # simulate latent fuel load data (from p_latent) #cols= yrs
   f_latent <- matrix(NA,nrow=nrow(p_latent),ncol=(ncol(p_latent)+1))
-  f_latent[,1] <- abs(rnorm(nrow(f_latent),colMeans(p_latent),sig_p)) # initial year for each loc
+  f_latent[,1] <- rnorm(nrow(f_latent),colMeans(p_latent),sig_p) # initial year for each loc
   proc_error <- matrix(rnorm(nPlots*(nYears+1), 0, sig_p),nrow=nrow(p_latent),ncol=(ncol(p_latent)+1))
   
   for(i in 2:(ncol(f_latent))){
-    f_latent[,i] <- abs(alpha*(f_latent[,i-1]) + beta*(p_latent[,i-1]) +proc_error[,i])
+    f_latent[,i] <- alpha*(f_latent[,i-1]) + beta*(p_latent[,i-1]) +proc_error[,i]
   }
   
   f_latent <- f_latent[,2:ncol(f_latent)] # drop initial condition year
@@ -83,13 +83,12 @@ make_sim_data<-function(
   for(x in 1:(nPlots)){
     for (t in 1:nYears){
       # obs_err<- mean(rnorm(n_samples[x,t],0,sig_o))
-      obs_err<- mean(rnorm(1,0,sig_o))
-      
+      # obs_err<- mean(rnorm(1,0,sig_o))
       # f_obs[x,t] <- f_latent[x,t]+obs_error[x,t]
       obs_err<-rnorm(1,0,sig_o/sqrt(n_samples[x,t]))
       obs_error[x,t]<-obs_err
       f_obs[x,t] <- f_latent[x,t]+obs_err
-      if(f_obs[x,t]<0) (f_obs[x,t]<-0)
+      # if(f_obs[x,t]<0) (f_obs[x,t]<-0)
     }
   }
 
@@ -117,6 +116,8 @@ make_sim_data<-function(
   sim_df$samples<-as.vector(c(t(n_samples)))
   sim_df$alpha<-alpha
   sim_df$beta<-beta
+  
+  rand_plot<-sample(nPlots, size = 1)
   
   #visual
   if (show_plots==TRUE) {
@@ -160,13 +161,4 @@ make_sim_data<-function(
   
   return(list)
 }
-# 
-# sim_data<-make_sim_raw()
-# plot(sim_data$params$f_obs, sim_data$params$prod)
-# sum(sim_data$params$f_obs_all==0)
-# nrow(sim_data$params)
-# hist(sim_data$params$f_obs)
-
-
-
 

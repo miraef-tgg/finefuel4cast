@@ -1,6 +1,4 @@
 # ----------------------- packges, fncs----------------------
-#need to factor in dividing by S probably....
-
 if (!require("pacman")) install.packages("pacman"); library(pacman)
 p_load(rstan,dplyr,tidyr,shinystan,here,rstudioapi,readtext,  install = TRUE, update = getOption("pac_update"), character.only = FALSE)
 
@@ -28,11 +26,10 @@ for(i in 1:nrow(fuel_data_z)){
 sample_data<-as.data.frame(dat$samp[row_keeps])
 
 fit1<-readRDS( "model_outputs/fuels_model_ppc.rds")
-# fit1<-readRDS( "model_outputs/z_sig_f.rds")
 
-# ------------------------- posterior predictive check (outside stan)
+# ------------------------- posterior predictive check -----------------
 
-#extracting frep, F,o_rep, o_rep2, 
+#extracting frep, F,o_rep,
 F_rep<-rstan::extract(fit1, 'Fvec_rep', permuted=F); F_rep<-apply(F_rep, 3,c)
 Fvec<-rstan::extract(fit1,'Fvec', permuted=F); Fvec<-apply(Fvec,3,c)
 sig_o<-rstan::extract(fit1,'sig_o', permuted=F); sig_o<-apply(sig_o,3,c)
@@ -64,7 +61,6 @@ o_rep<-o_rep[,as.numeric(col_nums$index)]
 o_data<-o_data[,as.numeric(col_nums$index)]
 dim(o_rep) ==dim(Fvec)
 
-nIters<-500
 nIters<-nrow(o_rep)
 loglikrep<-matrix(0,1,nIters)
 loglikdata<-matrix(0,1,nIters)
@@ -91,6 +87,4 @@ par(mfrow=c(1,1))
 plot(-2*loglikdata,-2*loglikrep, ylab="T(Replicated Data|Theta)",xlab="T(Data|Theta)", main="standardized model: log likelihood")
 abline(0,1,col="red")
 # dev.off()
-
-# round(log_sum_count/ncol(loglikdata),3)
 
