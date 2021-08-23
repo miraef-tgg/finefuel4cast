@@ -1,7 +1,6 @@
-# this script calculates parameter uncertainty from the forecast_lm model using monte carlo sampling
+# this script creates point estimates for a forecast of 2021 as well as hindcasts of 1988-2021
+# saves results in a .csv file
 
-
-#make point estimates for hindcast data as well 
 ## ----------------------------------------------  data + packages ------------------------------------------------
 
 if (!require("pacman")) install.packages("pacman"); library(pacman)

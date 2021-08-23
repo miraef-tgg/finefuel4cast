@@ -12,7 +12,7 @@ model_df_orig<-read.csv("gee_4cast_data/model_csvs/march_forecast_2021_csv.csv")
 model_df<-model_df_orig
 
 #if nIters isn't definted by user
-if ( !exists(deparse(substitute(nIters))))(nIters<-500 )
+if ( !exists(deparse(substitute(nIters))))(nIters<-100 )
 
 #mod1: linear forecast
 mod1_data<-subset(model_df, select=c(z_agb,prev_z_agb,yr, z_pr,z_tmmx,z_vpd,z_ndvi,pr_frac,

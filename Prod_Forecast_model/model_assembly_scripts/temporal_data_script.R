@@ -1,5 +1,5 @@
 # This script formats spatial data downloaded from GEE and converts the tiff to a csv
-# if you change the date range in the GEE script, this will need to change as well
+# if you change the date range in the GEE script, this will need to change this script as well
 # this takes a long time to run (hours)
 # gridmet data is available starting in 1979, ndvi not available til 1986
 
