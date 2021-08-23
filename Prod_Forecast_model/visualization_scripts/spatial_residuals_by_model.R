@@ -24,7 +24,7 @@ nYears<-34
 
 # for (i in 1:nYears){
 #   print(1986+i)
-#   cur_df<-as.data.frame(cbind(space_only_predictions[[3]][,i], predictions_lm[[4]]))
+#   cur_df<-as.data.frame(cbind(predictions_lm[[3]][,i], predictions_lm[[4]]))
 #   names(cur_df)<-c("resid", "long", "lat")
 #   name<-paste0("Variogram: test year = ", 1986+i)
 #   name2<-paste0("Vgram", 1986+i)
@@ -35,7 +35,7 @@ nYears<-34
 # }
 
 ## ---------------------------------------- per pixel residuals by year ---------------------------------
-
+#we are only running this for the predictions_lm model--you can do it for the others as well
 
 #standard colors 
 cols1<-colorRampPalette(c("green", "yellow"))
@@ -43,7 +43,7 @@ cols2<-colorRampPalette(c("yellow", "red"))
 
 #low/hi resid vals
 
-for (m in 1:length(models)){
+for (m in 2:2){
   predictions_model<-models[[m]]
   save_loc<-save_locs[[m]]
   
@@ -61,7 +61,6 @@ for (m in 1:length(models)){
   
   resid_list<-list()
   
-  # spatial only loop
   for (i in 1:nYears){
     cur_df<-as.data.frame(cbind(predictions_model[[3]][,i], predictions_lm[[4]]))
     names(cur_df)<-c("resid", "long", "lat")
@@ -73,7 +72,7 @@ for (m in 1:length(models)){
     sp<-col_resid; sp$lat<-as.numeric(sp$lat);  sp$long<-as.numeric(sp$long)
     coordinates(sp)<-~long+lat;  sp@proj4string<-CRS("+init=epsg:4326")
     name<-paste0("resids",i+1986)
-    png(paste0("figures/model_residuals/", save_loc,name, ".png"))
+    png(paste0("figures/model_residuals/", name, ".png"))
     layout(matrix(1:2,nrow=1),widths=c(0.8,0.2))
     
     print(plot('n',x=sp$long,y=sp$lat,xlab="Longitude", ylab="Latitude", 
@@ -104,55 +103,4 @@ for (m in 1:length(models)){
   }
 }
  
-# # ## --------------------------------------------- TS resid patterns --------------------------------------------- 
-# # 
-# # # in resids (are some places always under/over estimated?)
-# df_names<-paste0(names(predictions_lasso[[1]]), rep(seq(1986,2019,1),each=7))
-# df_names
-# hist(predictions_lasso[[1]]$resid, breaks=50)
-# 
-# rand<-sample(x=1:nrow(predictions_lasso[[3]]), size=8000)
-# plot(predictions_lasso[[1]]$pred[rand], predictions_lasso[[1]]$agb[rand],pch=19, col=rgb(0,0,1,.6),cex=.1) #regression diffusion?
-# abline(a=0,b=1, col="red")
-# 
-# new2<-subset(new, select=c(paste0("resid", "_", seq(1,33,1))))
-# 
-# resids_lasso<-do.call(args=predictions_lasso, what=cbind); names(resids_lasso)<-df_names
-# resids_lasso_mat<-resids_lasso[, names(resids_lasso) %in% c(names(resids_lasso)[(grepl(as.character("resid"), names(resids_lasso)))])]
-# 
-# rand_10<-sample(1:nrow(resids_lasso_mat),10)
-# ts_10<-resids_lasso_mat[rand_10,]
-# 
-# png(paste0(vis_fold, "/lasso/resid_ts_1.png"))
-# plot.ts(t(ts_10), main= "10 randomly drawn time series plots", xy.labels="h")
-# dev.off()
-# 
-# 
-# n<-1000
-# rand_10<-sample(1:nrow(resids_lasso_mat),n)
-# ts_10<-resids_lasso_mat[rand_10,]
-# qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-# col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-# 
-# png(paste0(vis_fold, "/lasso/resid_ts_2.png"))
-# plot(x=seq(1987,2019,1), y=(ts_10[1,]), type="l", col="black", ylim=c(-1,1), ylab="residual for indiv loc", xlab="year", main="Residual time series for 1000 random locations")
-# for (i in 1:n){
-#   lines(x=seq(1987,2019,1), y=(ts_10[i,]), type="l", col=col_vector[i])
-# }
-# 
-# dev.off()
-# 
-# 
-# # ## ---------------------------------------------Autocorr per pixel  --------------------------------------------- 
-# 
-# rand_1000<-sample(1:nrow(resids_lasso_mat),1000)
-# acf_df<-data.frame(matrix(NA, nrow=1000,ncol=11))
-# ts_big<-t(resids_lasso_mat)
-# for( i in 1:length(rand_1000)){
-#   r<-(rand_1000)[i]
-#   a<-(acf(ts_big[,r],lag.max = 10,plot=FALSE)$acf)
-#   acf_df[i,]<-t(as.vector(acf((ts_big[,r]),lag.max = 10,plot=FALSE)$acf))
-# }
-# 
-# colMeans(acf_df)
-# 
+ 
