@@ -3,7 +3,7 @@
 # ----------------------- packges, fncs----------------------
 
 if (!require("pacman")) install.packages("pacman"); library(pacman)
-p_load(rstan,dplyr,tidyr,shinystan,here,rstudioapi,readtext,  install = TRUE, update = getOption("pac_update"), character.only = FALSE)
+p_load(rstan,dplyr,tidyr,shinystan,here,rstudioapi,readtext, plotrix, install = TRUE, update = getOption("pac_update"), character.only = FALSE)
 
 source(file = "model_checking_and_validation/make_sim_data_function.R")
 
@@ -11,15 +11,19 @@ source(file = "model_checking_and_validation/make_sim_data_function.R")
 
 dat<-readRDS("fuels_model_data/fuels_model_data.rds")
 
+#sim params to play with
+alpha_sim=.5;beta_sim=.25;sig_o_sim=3;sig_p_sim=.6
+
+
 sim_dat<-make_sim_data(  nPlots=198,
                          nYears=25,
-                         sig_o=.7, #fuel obs error
-                         sig_p=.6, # process error
+                         sig_o=sig_o_sim, #fuel obs error
+                         sig_p=sig_p_sim, # process error
                          percent_missing=0,
                          show_plots=TRUE,
                          random=FALSE,
-                         alpha=.1,
-                         beta=.25)
+                         alpha=alpha_sim,
+                         beta=beta_sim)
 
 meta_dat<-readRDS("fuels_model_data/fuels_model_meta_data.rds")
 row_keeps<-meta_dat$row_keeps
@@ -81,7 +85,7 @@ stan.data.sim<-list("nLocs"=meta_dat$nLocs, "nYears"=meta_dat$nYears, "nMiss"=me
 
 fit1<-stan(model_code=code,data=stan.data.sim,control=list(adapt_delta=.8, max_treedepth=10),warmup=2000,iter=6000, chains=4, save_warmup=F)
 
-saveRDS(fit1, "model_outputs/sim_fuels_model.rds")
+# saveRDS(fit1, "model_outputs/sim_fuels_model.rds")
 
 # ----------------------- quick check ----------------------
 
@@ -111,19 +115,11 @@ sig_p_975<-quantile(sig_pout,  0.975)
 sig_p_025<-quantile(sig_pout,  0.025)
 sig_p<-quantile(sig_pout,  0.5)
 
-sim_dat<-make_sim_data(  nPlots=198,
-                         nYears=25,
-                         sig_o=.7, #fuel obs error
-                         sig_p=.6, # process error
-                         percent_missing=0,
-                         show_plots=TRUE,
-                         random=FALSE,
-                         alpha=.1,
-                         beta=.25)
-alpha_sim=.1;beta_sim=.25;sig_o_sim=.7;sig_p_sim=.6
 
-plotCI(x=alpha_sim, y=alpha,li=alpha_025, ui=alpha_975, xlim=c(0,1), ylim=c(0,1), col="red", lwd=3, pch=15,
-       main="Parameter Retrieval Simulation", xlab="Fuels Model parameter 95% CI estimate", ylab="known parameter values")
+
+
+plotCI(x=alpha_sim, y=alpha,li=alpha_025, ui=alpha_975, xlim=c(0,3.1), ylim=c(0,3.1), col="red", lwd=3, pch=15,
+       main="Parameter Retrieval Simulation", ylab="Fuels Model parameter 95% CI estimate", xlab="known parameter values")
 plotCI(x=beta_sim, y=beta, li=beta_025, ui=beta_975, xlim=c(0,1), ylim=c(0,1), col="blue", lwd=3, pch=15, add=T)
 plotCI(x=sig_o_sim, y=sig_o, li=sig_o_025, ui=sig_o_975, xlim=c(0,1), ylim=c(0,1), col="darkgreen", lwd=3, pch=15, add=T)
 plotCI(x=sig_p_sim, y=sig_p, li=sig_p_025, ui=sig_p_975, xlim=c(0,1), ylim=c(0,1), col="purple", lwd=3, pch=15, add=T)

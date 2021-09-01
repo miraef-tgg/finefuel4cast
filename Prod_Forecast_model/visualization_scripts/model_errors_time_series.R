@@ -93,3 +93,9 @@ legend("topright", pch=19,legend=c("spatial only/null model", "forecast", "clim"
 dev.off()
 
 
+mape_df<-as.data.frame(colMeans(mape))
+
+mape_df$comp_to_null<-(mape_df[1,1]-mape_df[,1])/mape_df[1,1]*100
+mape_df$comp_to_forecast<-(mape_df[2,1]-mape_df[,1])/mape_df[1,1]*100
+mape_df[1:4,]
+

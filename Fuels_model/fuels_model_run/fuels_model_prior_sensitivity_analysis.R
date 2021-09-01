@@ -1,43 +1,40 @@
+# This runs >80 different priors and takes a very long time.
+# the 'sig_f' isn't actually a prior--it's the initial condition uncertainty that is fixed at 0.8 in our code
+# Outputs are saved in corresponding folders in ' in the 'model_outputs/sensitivity_analysis'
+
+
 # ----------------------- packges, fncs----------------------
 
 if (!require("pacman")) install.packages("pacman"); library(pacman)
 p_load(rstan,dplyr,tidyr,shinystan,here,rstudioapi,readtext,  install = TRUE, update = getOption("pac_update"), character.only = FALSE)
 
-# current_path <-getActiveDocumentContext()$path
-# BL_folder<-dirname(dirname((current_path)))
-# source(file = paste0(BL_folder,"/f3_functions.R"))
-# source(file = paste0(BL_folder,"/subset_Scripts/raw_hi_dens_subset.R"))
-# source(file = paste0(BL_folder,"/z_fast_configuring.R"))
-
 
 # ----------------------- data ----------------------
 
-dat<-readRDS("fuels_model_data/fuels_model_data.rds")
+dat<-readRDS("fuels_model_data/fuels_model_data.rds") 
 meta_dat<-readRDS("fuels_model_data/fuels_model_meta_data.rds")
 
+#additional data to run model only on locations and years with few missing data points
 row_keeps<-meta_dat$row_keeps
+year_length<-as.data.frame(meta_dat$year_length)
+sample_data<-as.data.frame(dat$samp[row_keeps])
 
+#standardizing data
 prod_data_orig<-dat$prod[row_keeps,11:35]
 fuel_data_orig<-dat$fine_fuel_obs[row_keeps,1:25]
-fuel_data_dev<-matrix(NA,ncol=ncol(fuel_data_orig), nrow=nrow(fuel_data_orig))
-prod_data_dev<-matrix(NA,ncol=ncol(prod_data_orig), nrow=nrow(prod_data_orig))
 fuel_data_z<-matrix(NA,ncol=ncol(fuel_data_orig), nrow=nrow(fuel_data_orig))
 prod_data_z<-matrix(NA,ncol=ncol(prod_data_orig), nrow=nrow(prod_data_orig))
 
 for(i in 1:nrow(fuel_data_z)){
-  fuel_data_dev[i,]<-fuel_data_orig[i,]-mean(fuel_data_orig[i,],na.rm=TRUE)
-  prod_data_dev[i,]<-prod_data_orig[i,]-mean(prod_data_orig[i,])
   fuel_data_z[i,]<-(fuel_data_orig[i,]-mean(fuel_data_orig[i,],na.rm=TRUE))/sd(fuel_data_orig[i,],na.rm=TRUE)
   prod_data_z[i,]<-(prod_data_orig[i,]-mean(prod_data_orig[i,]))/sd(prod_data_orig[i,])
 }
 
-sample_data<-as.data.frame(dat$samp[row_keeps])
 fuel_data_z2<-replace(fuel_data_z, is.na(fuel_data_z), -1000) #it will be painfully obvious if model isn't skipping NA's
-year_length<-as.data.frame(meta_dat$year_length)
 
 # ----------------------- stan code ----------------------
 code<-readtext("stan_txts/fuels_model_sensitivity_code.txt")$text
-# file.show("stan_txts/z_priors_loop_S.txt")
+# file.show("stan_txts/fuels_model_sensitivity_code.txt")
 
 # ----------------------- combos  ----------------------
 
