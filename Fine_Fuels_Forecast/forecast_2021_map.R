@@ -23,9 +23,9 @@ blm_states<-readOGR("Prod_Forecast_model/gee_4cast_data/gis_data/states.shp")
 blm_admin<-readOGR("Prod_Forecast_model/gee_4cast_data/gis_data/admin.shp")
 
 
-model_df2<-read.csv("Prod_Forecast_model/gee_4cast_data/model_csvs/march_all_model_csv.csv")
+# model_df2<-read.csv("Prod_Forecast_model/gee_4cast_data/model_csvs/march_all_model_csv.csv")
 
-
+#extracting year 2021 
 spin_mean<-fuelcast_perc$mean[,24]
 spin_90<-fuelcast_perc$CI90[,24]
 spin_10<-fuelcast_perc$CI10[,24]

@@ -68,13 +68,13 @@ sig_p_rhat<-vector()
 q_upper<-.9
 q_lower<-.1
 
-for ( v in 9:9){
+for ( v in 1:9){
   var<-var_list[[v]]
   stan_list<-list()
   alpha_vec<-vector(); alpha_hi<-vector(); alpha_lo<-vector()
-  beta_vec<-vector()
-  sig_o_vec<-vector()
-  sig_p_vec<-vector()
+  beta_vec<-vector();beta_hi<-vector(); beta_lo<-vector()
+  sig_o_vec<-vector();sig_o_hi<-vector(); sig_o_lo<-vector()
+  sig_p_vec<-vector();sig_p_hi<-vector(); sig_p_lo<-vector()
   div_trans_vec<-vector()
   sig_o_rhat<-vector()
   sig_p_rhat<-vector()
@@ -85,10 +85,27 @@ for ( v in 9:9){
     fit1<-readRDS(paste0("model_outputs/", mod_name, "/", var_str, "/", var_str,"_",  var[i], ".rds"))
     stan_list[[i]]<-fit1
     names(stan_list)[[i]]<-paste0( var_str,"_",  var[i])
-    alpha_vec[i]<-mean(rstan::extract(fit1, "alpha", permuted=F))
-    beta_vec[i]<-mean(rstan::extract(fit1, "beta", permuted=F))
-    sig_o_vec[i]<-mean(rstan::extract(fit1, "sig_o", permuted=F))
-    sig_p_vec[i]<-mean(rstan::extract(fit1, "sig_p", permuted=F))
+    alphaout<-rstan::extract(fit1, "alpha", permuted=F)
+    alpha_vec[i]<-mean(alphaout)
+    alpha_hi[i]<-quantile(alphaout, .95)
+    alpha_lo[i]<-quantile(alphaout, .05)
+    
+    betaout<-rstan::extract(fit1, "beta", permuted=F)
+    beta_vec[i]<-mean(betaout)
+    beta_hi[i]<-quantile(betaout, .95)
+    beta_lo[i]<-quantile(betaout, .05)
+    
+    sig_oout<-rstan::extract(fit1, "sig_o", permuted=F)
+    sig_o_vec[i]<-mean(sig_oout)
+    sig_o_hi[i]<-quantile(sig_oout, .95)
+    sig_o_lo[i]<-quantile(sig_oout, .05)
+    
+    sig_pout<-rstan::extract(fit1, "sig_p", permuted=F)
+    sig_p_vec[i]<-mean(sig_pout)
+    sig_p_hi[i]<-quantile(sig_pout, .95)
+    sig_p_lo[i]<-quantile(sig_pout, .05)
+    
+    
     div_trans_vec[i]<-sum(get_divergent_iterations(fit1))
     sig_o_rhat[i]<-summary(fit1)[[1]][3,10]
     sig_p_rhat[i]<-summary(fit1)[[1]][4,10]
@@ -107,13 +124,13 @@ for ( v in 9:9){
   
   save_loc1<-paste0("Supplemental_Info_figs/prior_sensitivity_analysis_figs/", var_str, ".png")
   png(save_loc1)
-  plot(x=var, y=alpha_vec, main=var_str, ylim=c(-.5,1),pch=19, 
+  plotCI(x=var, y=alpha_vec, li=alpha_lo, ui=alpha_hi,main=var_str, ylim=c(-.5,1),pch=19, 
        xlab= paste0(var_str, " (prior)"), ylab ="posteriors")
-  points(x=var, y=beta_vec, col="blue",pch=19)
-  points(x=var, y=sig_o_vec, col="red",pch=19)
-  points(x=var, y=sig_p_vec, col="green",pch=19)
-  legend("topleft", title = "raw_z", legend=priors_text, pch=c(19,19,15,15), col=c("black", "blue", "red", "green", "gray"))
-  text(x=var, y=max(c(sig_o_rhat,sig_p_rhat)), div_trans_vec, col="darkgreen")
+  plotCI(x=var, y=beta_vec, li=beta_lo, ui=beta_hi, col="blue",pch=19, add=T)
+  plotCI(x=var, y=sig_o_vec,li=sig_o_lo, ui=sig_o_hi, col="red",pch=19, add=T)
+  plotCI(x=var, y=sig_p_vec, li=sig_p_lo, ui=sig_p_hi, col="chartreuse4",pch=19, add=T)
+  legend("bottomleft", title = "priors / init uncertainty", legend=priors_text, pch=c(19,19,19,19,15), col=c("black", "blue", "red", "chartreuse4", "gray"))
+  # text(x=var, y=max(c(sig_o_rhat,sig_p_rhat)), div_trans_vec, col="darkgreen")
   dev.off()
   
   save_loc2<-paste0("Supplemental_Info_figs/prior_sensitivity_analysis_figs/", var_str, "_diagnostics.png")
@@ -131,11 +148,11 @@ for ( v in 9:9){
   png(save_loc3)
   barplot(height=cov_all,cex.names=.6, ylim=c(0,1), names.arg=var, xlab=var_str,
           main = paste0(q_upper, "-",q_lower, " coverage \n", paste0(var_str)))
-  barplot(height=cov_obs, ylim=c(0,1), col=rgb(1,0,0,.3), add=TRUE)
   barplot(height=cov_proc, ylim=c(0,1), col=rgb(0,1,0,.3), add=TRUE)
+  barplot(height=cov_obs, ylim=c(0,1), col=rgb(1,0,0,.5), add=TRUE)
   barplot(height=cov_par, ylim=c(0,1), col=rgb(0,0,1,1), add=TRUE)
-  legend("topleft", legend=c("all", "obs err","proc err", "param err"),
-         pch=15, col=c("darkgray", "red", "green", "blue"))
+  legend("topleft", legend=c("all err", "proc err","obs err", "param err"),
+         pch=15, col=c("darkgray",  "green", "red","blue"))
   abline(a=(q_upper-q_lower), b=0, h=(q_upper-q_lower), lty=2)
   
   dev.off()

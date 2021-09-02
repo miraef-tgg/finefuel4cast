@@ -1,4 +1,4 @@
-#This script makes hindcasts from 1987-2020
+#This script makes hindcasts of latent fine fuel from 1988-2020 and forecasts for 2021
 
 #---------- loading pcks, data, model-------------
 
@@ -18,6 +18,7 @@ names(prod_data)<-seq(1987,2020)
 
 #forecasted/hindcasted data 1988-2021
 prod_preds<-read.csv("Prod_Forecast_model/prod_model_outputs/forecast2021/prod_cast_1988_2021.csv")
+names(prod_preds)<-seq(1988,2021,1)
 
 (nLocs<-nrow(prod_preds))
 
@@ -49,11 +50,12 @@ sig_p_est<-mean(matrix(apply(sig_pout,2,mean)))
 # in year 'y' spin up using forecasted productivity data + forecast uncertainty
 
 
-prod_start_yr<-1 #1987
-latent_forecast_yr<-prod_start_yr+10 #1998
+prod_start_yr<-1 #eg. 1987
+latent_forecast_yr<-prod_start_yr+10 # eg. 1998
 
 # matrix to hold spin-ups 
-Fspin<-matrix(NA,nrow=nrow(prod_data), ncol=11) 
+Fspin<-matrix(NA,nrow=nrow(prod_data), ncol=11)  #eg spin-up = 1988 thru 1998; forecast = 1999
+Fspin_check<-matrix(NA,nrow=nrow(prod_data), ncol=11) #doing without process error to check
 
 #set first val to prod 1987 
 Fspin[,1]<-prod_data[,prod_start_yr]
@@ -62,15 +64,17 @@ Fspin[,1]<-prod_data[,prod_start_yr]
 nIters<-100 #(hitting memory limits) 
 random_iters<-sample(1:length(betaout),nIters)
 Fspin_iters<-matrix(NA,nrow=nLocs*24,ncol=nIters) #holds all iterations as columns, each loc and year (1998-2021) as rows
+Fspin_iters_check<-matrix(NA,nrow=nLocs*24,ncol=nIters) #holds all iterations as columns, each loc and year (1998-2021) as rows
 
 length(seq(1998,2021,1))
 
 prod_data_subset<-prod_data[,prod_start_yr:(prod_start_yr+10)] #1987:1997
-prod_preds_subset<-prod_preds[,latent_forecast_yr]
+prod_preds_subset<-prod_preds[,latent_forecast_yr] #1998
 
-head(prod_data_subset) #1987-1997
-(prod_preds_subset) #1998
-# for (i in 1:nIters){'
+(prod_data_subset[1:5,]) #1987-1997
+(prod_preds[1:5,]) #1998
+(prod_preds_subset[1:5]) #1998
+
 i<-1
 count=1
 
@@ -90,6 +94,8 @@ for ( i in 1:nIters){
         prev_yr<-cur_yr-1
         yr_name<-1986+cur_yr
         Fspin[,cur_yr]<-alphaout[iter]*Fspin[,prev_yr]+betaout[iter]*prod_data_subset[,cur_yr] + rnorm(nLocs,0,sig_pout[iter])
+        Fspin_check[,cur_yr]<-alphaout[iter]*Fspin[,prev_yr]+betaout[iter]*prod_data_subset[,cur_yr] #try without error
+        names(Fspin)<-seq(1987,1997)
         names(Fspin)[prev_yr]<-yr_name
         
       }
@@ -98,9 +104,11 @@ for ( i in 1:nIters){
         (iter<-random_iters[i])
         prev_yr<-cur_yr-1
         yr_name<-1986+cur_yr
-        # Fspin[,cur_yr]<-alphaout[iter]*Fspin[,prev_yr]+betaout[iter]*prod_preds_subset #check without error
+        Fspin_check[,cur_yr]<-alphaout[iter]*Fspin[,prev_yr]+betaout[iter]*prod_preds_subset #check without error
         Fspin[,cur_yr]<-alphaout[iter]*Fspin[,prev_yr]+betaout[iter]*(prod_preds_subset+rnorm(nLocs, 0, proc_err)) + rnorm(nLocs,0,sig_pout[iter])
         Fspin_iters[(nLocs*(count-1)+1):(count*nLocs),i]<-Fspin[,11]
+        Fspin_iters_check[(nLocs*(count-1)+1):(count*nLocs),i]<-Fspin_check[,11]
+        
       }
     }   
     count=count+1 
@@ -108,12 +116,42 @@ for ( i in 1:nIters){
 }
 
 
+#--------------------------checking-------------------
 
+prod_preds_subset[1:10]
+prod_preds[1:10,34]
 
 # check; rows = locations and years, columns = iterations
 # View(Fspin_iters[(nLocs-30):(nLocs+30),])
+# View(Fspin_iters_check[(nLocs-30):(nLocs+30),])
 #nrow(Fspin_iters)/nLocs
 
+# does latent fuel load look like productivity of that year?
+(Fspin_iters[555,]) #first year= 1989
+(Fspin_iters_check[555,])
+prod_data[555,]
+
+#year 1 of latent = 1998
+plot(apply(Fspin_iters[1:100,], 1,mean), apply(Fspin_iters_check[1:100,],1,mean))
+plot(apply(Fspin_iters[1:500,], 1,mean), prod_data[1:500,12], pch=19)
+
+#1998...are you off by a year? ir matches better next year?
+cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,11]) #forecast w/ prev year
+cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,12]) #forecast w/ current year
+cor(apply(Fspin_iters_check[(nLocs+1):(nLocs*2),], 1,mean), prod_data[,12]) #??
+
+#2020
+cor(apply(Fspin_iters_check[(nLocs*23+1):(nLocs*24),], 1,mean), prod_data[,34]) #??
+plot(apply(Fspin_iters_check[(nLocs*23+1):(nLocs*24),], 1,mean), prod_data[,33]) #??
+
+
+
+# Fspin_iters_check[555,], pch=19)
+plot(Fspin_iters[5,], Fspin_iters_check[5,], pch=25)
+
+prod_data[555,]
+
+# View(Fspin_iters[(nLocs-30):(nLocs+30),])
 
 write.csv(Fspin_iters, "Fine_Fuels_Forecast/output_data/latent_forecast_distrib.csv", row.names=F)
 

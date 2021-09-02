@@ -168,14 +168,10 @@ return(sum_df)
 # 
 # prod_data_orig<-dat$prod[row_keeps,11:35]
 # fuel_data_orig<-dat$fine_fuel_obs[row_keeps,1:25]
-# fuel_data_dev<-matrix(NA,ncol=ncol(fuel_data_orig), nrow=nrow(fuel_data_orig))
-# prod_data_dev<-matrix(NA,ncol=ncol(prod_data_orig), nrow=nrow(prod_data_orig))
 # fuel_data_z<-matrix(NA,ncol=ncol(fuel_data_orig), nrow=nrow(fuel_data_orig))
 # prod_data_z<-matrix(NA,ncol=ncol(prod_data_orig), nrow=nrow(prod_data_orig))
 # 
 # for(i in 1:nrow(fuel_data_z)){
-#   fuel_data_dev[i,]<-fuel_data_orig[i,]-mean(fuel_data_orig[i,],na.rm=TRUE)
-#   prod_data_dev[i,]<-prod_data_orig[i,]-mean(prod_data_orig[i,])
 #   fuel_data_z[i,]<-(fuel_data_orig[i,]-mean(fuel_data_orig[i,],na.rm=TRUE))/sd(fuel_data_orig[i,],na.rm=TRUE)
 #   prod_data_z[i,]<-(prod_data_orig[i,]-mean(prod_data_orig[i,]))/sd(prod_data_orig[i,])
 # }

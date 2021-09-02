@@ -45,7 +45,6 @@ nyears<-length(unique(meta_dat$fuels_obs_index[,2]))
 o_rep_locs<-rep(seq(1,nLocs), nyears)
 o_rep_yrs<-rep(seq(1,nyears), each=nLocs)
 o_rep_loc_yrs<-paste0(o_rep_locs, "_", o_rep_yrs)
-#View(o_rep_loc_yrs)
 
 col_nums<-as.data.frame(cbind(o_rep_loc_yrs,seq(1,ncol(o_rep))))
 names(col_nums)<-c("loc_yr", "index")
@@ -82,9 +81,15 @@ for (iter in 1:nIters){ #n
 
 log_sum_count/(nrow(loglikdata)*ncol(loglikdata))
 
-# png("G:/My Drive/finefuel4cast/meeting20210412/models/raw_z_prior_sens/raw_z_ppc.png")
+
+#save
+png("Figures/ppc.png")
 par(mfrow=c(1,1))
 plot(-2*loglikdata,-2*loglikrep, ylab="T(Replicated Data|Theta)",xlab="T(Data|Theta)", main="standardized model: log likelihood")
 abline(0,1,col="red")
-# dev.off()
+dev.off()
+
+#look
+plot(-2*loglikdata,-2*loglikrep, ylab="T(Replicated Data|Theta)",xlab="T(Data|Theta)", main="standardized model: log likelihood")
+abline(0,1,col="red")
 

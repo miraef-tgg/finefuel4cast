@@ -11,7 +11,6 @@ sig_oout<-rstan::extract(fit1, 'sig_o', permuted=F);sig_oout<-apply(sig_oout, 3,
 sig_pout<-rstan::extract(fit1, 'sig_p', permuted=F);sig_pout<-apply(sig_pout, 3,c)
 
 # plots
-# png(paste0(save_loc, "/bivariate_pars/alpha.png"))
 par(mfrow=c(1,3))
 plot(alphaout, betaout, main=" alpha vs beta")
 plot(alphaout, sig_oout, main=" alpha vs sig_o")
