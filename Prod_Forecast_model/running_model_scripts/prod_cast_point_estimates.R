@@ -17,31 +17,31 @@ mod1_data2021<-subset(model_df2021, select=c(z_agb,prev_z_agb,yr, z_pr,z_tmmx,z_
 
 (lm_coeffs<-read.csv( "prod_model_outputs/march_forecast_lm_coeffs.csv"))
 
-nLocs<-nrow(mod1_data)
+nLocs<-nrow(mod1_data2021)
 
 # # ----------------------- Forecast point estimates (2021)  -------------------------
 #use lm_coeffs for point estimates of coefficients
+nIters<-1
 lm_coeffs[,2]<-as.numeric(lm_coeffs[,2])
-march_forecast_point_est2021<-matrix(NA,nrow=nIters,ncol=nLocs)
+march_forecast_point_est2021<-matrix(NA,nrow=nLocs,ncol=1)
 
 march_forecast_point_est2021<-lm_coeffs[lm_coeffs[,1]=="int",2]+
-  lm_coeffs[lm_coeffs[,1]=="prev_z_agb",2]*mod1_data$prev_z_agb +
-  lm_coeffs[lm_coeffs[,1]=="z_pr",2]*mod1_data$z_pr +
-  lm_coeffs[lm_coeffs[,1]=="z_tmmx",2]*mod1_data$z_tmmx +
-  lm_coeffs[lm_coeffs[,1]=="z_vpd",2]*mod1_data$z_vpd +
-  lm_coeffs[lm_coeffs[,1]=="z_ndvi",2]*mod1_data$z_ndvi +
-  lm_coeffs[lm_coeffs[,1]=="pr_frac",2]*mod1_data$pr_frac +
-  lm_coeffs[lm_coeffs[,1]=="prev_pfg_frac",2]*mod1_data$prev_pfg_frac +
-  lm_coeffs[lm_coeffs[,1]=="z_ssm",2]*mod1_data$z_ssm +
-  lm_coeffs[lm_coeffs[,1]=="z_bulk_dens",2]*mod1_data$z_bulk_dens +
-  lm_coeffs[lm_coeffs[,1]=="z_pr_z_ssm",2]*mod1_data$z_pr_z_ssm 
+  lm_coeffs[lm_coeffs[,1]=="prev_z_agb",2]*mod1_data2021$prev_z_agb +
+  lm_coeffs[lm_coeffs[,1]=="z_pr",2]*mod1_data2021$z_pr +
+  lm_coeffs[lm_coeffs[,1]=="z_tmmx",2]*mod1_data2021$z_tmmx +
+  lm_coeffs[lm_coeffs[,1]=="z_vpd",2]*mod1_data2021$z_vpd +
+  lm_coeffs[lm_coeffs[,1]=="z_ndvi",2]*mod1_data2021$z_ndvi +
+  lm_coeffs[lm_coeffs[,1]=="pr_frac",2]*mod1_data2021$pr_frac +
+  lm_coeffs[lm_coeffs[,1]=="prev_pfg_frac",2]*mod1_data2021$prev_pfg_frac +
+  lm_coeffs[lm_coeffs[,1]=="z_ssm",2]*mod1_data2021$z_ssm +
+  lm_coeffs[lm_coeffs[,1]=="z_bulk_dens",2]*mod1_data2021$z_bulk_dens +
+  lm_coeffs[lm_coeffs[,1]=="z_pr_z_ssm",2]*mod1_data2021$z_pr_z_ssm 
 
-names(march_forecast_point_est)<-"forecast2021"
-# write.csv(march_forecast_point_est,"prod_model_outputs/forecast2021/march_forecast_point_est_2021.csv",row.names = F )
+march_forecast_point_est2021<-as.data.frame(march_forecast_point_est2021)
+names(march_forecast_point_est2021)<-"forecast2021"
 
 
 # # ----------------------- Hindcasts point estimates (1988-2020) -------------------------
-
 
 length(seq(1988,2020,1))
 (nLocs<-nrow(model_df)/34)
@@ -73,6 +73,10 @@ for ( cur_yr in 1988:2020){
   count=count+1
 }
 
+# check for 1988
+# march_forecast_point_est[1:10]
+# mod$fitted.values[1:10]
+
 hindcast_point_est<-as.data.frame(hindcast_point_est)
 names(hindcast_point_est)<-paste0(rep("hindcast",33), seq(1988,2020,1))
 # write.csv(hindcast_point_est,"prod_model_outputs/forecast2021/hindcast_point_est_1988_2020.csv",row.names = F )
@@ -81,3 +85,55 @@ names(hindcast_point_est)<-paste0(rep("hindcast",33), seq(1988,2020,1))
 
 all_casts<-cbind(hindcast_point_est, march_forecast_point_est)
 write.csv(all_casts,"prod_model_outputs/forecast2021/prod_cast_1988_2021.csv",row.names = F )
+
+
+#check...residuals and fitted values should match residuals form model rds files
+
+#format actual data 1987-2020
+prod_data_check<-matrix(NA, nrow=nLocs, ncol=33)
+
+count<-1
+#not including 1987
+for ( i in 1:34){
+  prod_data_check[1:nLocs, count]<-model_df$z_agb[(nLocs*(i-1)+1):(i*nLocs)]
+  count=count+1
+}
+model_df[48273,1:10]
+
+model_df[48274,1:10]
+
+subset(model_df, model_df$yr==1988)[1,1:10]
+
+prod_data_check<-as.data.frame(prod_data_check)
+names(prod_data_check)<-paste0(rep("prod",33), seq(1988,2020,1))
+rand_subset<-sample(1:nLocs, 5000)
+
+
+resids_df_check<-matrix(NA, nrow=nLocs, ncol=33)
+
+predictions_lm<-readRDS("prod_model_outputs/march_forecast_lm.rds")
+resids<-predictions_lm$resids
+mod<-predictions_lm$mod_fit
+resids2<-mod$residuals
+
+coefficients(mod)
+
+for (i in 1:33){
+  # plot(prod_data_check[rand_subset,i],all_casts[rand_subset,i] )
+  # print(paste0((1987+i), " : correlation = " , cor(prod_data_check[,i], all_casts[,i])))
+  print(paste0((1987+i), " :hindcast mape = " , mean(abs(prod_data_check[,i]- all_casts[,i]))))
+  print(paste0((1987+i), " :from model mape = " , mean(abs(resids[,(i)]))))
+  resids_df_check[,i]<- all_casts[,i] - prod_data_check[,i]
+  
+}
+
+
+plot(resids[1:50,1],as.vector(resids2[1:50]))
+plot(resids[1:50,1],resids_df_check[1:50,1])
+
+
+plot(all_casts[,13], prod_data_check[,13])
+
+
+plot(y=all_casts[777,1:33], x=seq(1988,2020), col="red", type="l")
+lines(y=prod_data_check[777,], x=seq(1988,2020),col="black")

@@ -12,7 +12,6 @@ source(file = "model_checking_and_validation/make_sim_data_function.R")
 dat<-readRDS("fuels_model_data/fuels_model_data.rds")
 
 #sim params to play with
-alpha_sim=.1;beta_sim=.25;sig_o_sim=.7;sig_p_sim=.6
 
 
 sim_dat<-make_sim_data(  nPlots=198,
@@ -83,9 +82,7 @@ stan.data.sim<-list("nLocs"=meta_dat$nLocs, "nYears"=meta_dat$nYears, "nMiss"=me
 
 
 
-fit1<-stan(model_code=code,data=stan.data.sim,control=list(adapt_delta=.8, max_treedepth=10),warmup=2000,iter=6000, chains=4, save_warmup=F)
-
-# saveRDS(fit1, "model_outputs/sim_fuels_model.rds")
+fit1<-stan(model_code=code,data=stan.data.sim,control=list(adapt_delta=.8, max_treedepth=10),warmup=2000,iter=4000, chains=4, save_warmup=F, refresh=0)
 
 # ----------------------- quick check ----------------------
 
@@ -94,36 +91,39 @@ print(summary(fit1)[[1]][seq(1,5,1),c(1,10)])
 
 # ----------------------- check visually ----------------------
 
-alphaout<-rstan::extract(fit1, 'alpha', permuted=F);alphaout<-apply(alphaout, 3,c)
-betaout<-rstan::extract(fit1, 'beta', permuted=F);betaout<-apply(betaout, 3,c)
-sig_oout<-rstan::extract(fit1, 'sig_o', permuted=F);sig_oout<-apply(sig_oout, 3,c)
-sig_pout<-rstan::extract(fit1, 'sig_p', permuted=F);sig_pout<-apply(sig_pout, 3,c)
+# alphaout<-rstan::extract(fit1, 'alpha', permuted=F);alphaout<-apply(alphaout, 3,c)
+# betaout<-rstan::extract(fit1, 'beta', permuted=F);betaout<-apply(betaout, 3,c)
+# sig_oout<-rstan::extract(fit1, 'sig_o', permuted=F);sig_oout<-apply(sig_oout, 3,c)
+# sig_pout<-rstan::extract(fit1, 'sig_p', permuted=F);sig_pout<-apply(sig_pout, 3,c)
+# 
+# alpha_975<-quantile(alphaout,  0.975)
+# alpha_025<-quantile(alphaout,  0.025)
+# alpha<-quantile(alphaout,  0.5)
+# 
+# beta_975<-quantile(betaout,  0.975)
+# beta_025<-quantile(betaout,  0.025)
+# beta<-quantile(betaout,  0.5)
+# 
+# sig_o_975<-quantile(sig_oout,  0.975)
+# sig_o_025<-quantile(sig_oout,  0.025)
+# sig_o<-quantile(sig_oout,  0.5)
+# 
+# sig_p_975<-quantile(sig_pout,  0.975)
+# sig_p_025<-quantile(sig_pout,  0.025)
+# sig_p<-quantile(sig_pout,  0.5)
+# 
+# 
+# 
+# 
+# plotCI(x=alpha_sim, y=alpha,li=alpha_025, ui=alpha_975, xlim=c(0,3.1), ylim=c(0,3.1), col="red", lwd=3, pch=15,
+#        main="Parameter Retrieval Simulation", ylab="Fuels Model parameter 95% CI estimate", xlab="known parameter values")
+# plotCI(x=beta_sim, y=beta, li=beta_025, ui=beta_975, xlim=c(0,1), ylim=c(0,1), col="blue", lwd=3, pch=15, add=T)
+# plotCI(x=sig_o_sim, y=sig_o, li=sig_o_025, ui=sig_o_975, xlim=c(0,1), ylim=c(0,1), col="darkgreen", lwd=3, pch=15, add=T)
+# plotCI(x=sig_p_sim, y=sig_p, li=sig_p_025, ui=sig_p_975, xlim=c(0,1), ylim=c(0,1), col="purple", lwd=3, pch=15, add=T)
+# abline(0,1)
+# legend("bottomright", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
+#        pch=19, col=c("red", "blue", "purple" ,"darkgreen"))
 
-alpha_975<-quantile(alphaout,  0.975)
-alpha_025<-quantile(alphaout,  0.025)
-alpha<-quantile(alphaout,  0.5)
-
-beta_975<-quantile(betaout,  0.975)
-beta_025<-quantile(betaout,  0.025)
-beta<-quantile(betaout,  0.5)
-
-sig_o_975<-quantile(sig_oout,  0.975)
-sig_o_025<-quantile(sig_oout,  0.025)
-sig_o<-quantile(sig_oout,  0.5)
-
-sig_p_975<-quantile(sig_pout,  0.975)
-sig_p_025<-quantile(sig_pout,  0.025)
-sig_p<-quantile(sig_pout,  0.5)
 
 
-
-
-plotCI(x=alpha_sim, y=alpha,li=alpha_025, ui=alpha_975, xlim=c(0,3.1), ylim=c(0,3.1), col="red", lwd=3, pch=15,
-       main="Parameter Retrieval Simulation", ylab="Fuels Model parameter 95% CI estimate", xlab="known parameter values")
-plotCI(x=beta_sim, y=beta, li=beta_025, ui=beta_975, xlim=c(0,1), ylim=c(0,1), col="blue", lwd=3, pch=15, add=T)
-plotCI(x=sig_o_sim, y=sig_o, li=sig_o_025, ui=sig_o_975, xlim=c(0,1), ylim=c(0,1), col="darkgreen", lwd=3, pch=15, add=T)
-plotCI(x=sig_p_sim, y=sig_p, li=sig_p_025, ui=sig_p_975, xlim=c(0,1), ylim=c(0,1), col="purple", lwd=3, pch=15, add=T)
-abline(0,1)
-legend("bottomright", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
-       pch=19, col=c("red", "blue", "purple" ,"darkgreen"))
 
