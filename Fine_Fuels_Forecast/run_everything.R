@@ -11,10 +11,12 @@ setwd(current_folder)
 setwd("..")
 getwd()
 
-#run the spin up, save outputs
+source(file = "Fine_Fuels_Forecast/assigning_districts.R")
+
+#run 10 years of spin up on real data, runs 11th year on forecasted or hindcasted data, save outputs
 source(file = "Fine_Fuels_Forecast/predict_latent_fine_fuel.R")
 
-# make spatial map 2021
+# make spatial map for latent fine fuels of 2021
 source(file = "Fine_Fuels_Forecast/forecast_2021_map.R")
 
 # make latent fine fuel time series figures 1998-2021

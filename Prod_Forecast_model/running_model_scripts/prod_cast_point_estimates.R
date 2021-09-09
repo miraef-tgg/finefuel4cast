@@ -8,9 +8,11 @@ p_load(dplyr,tidyr,rstudioapi,stringr, ggplot2,tiff,raster,rgdal,spatialEco,glmn
 
 model_df_orig<-read.csv("gee_4cast_data/model_csvs/march_all_model_csv.csv")
 model_df<-model_df_orig
+unique(model_df$yr)
 
 model_df_orig2021<-read.csv("gee_4cast_data/model_csvs/march_forecast_2021_csv.csv")
 model_df2021<-model_df_orig2021
+unique(model_df_orig2021$yr)
 
 mod1_data2021<-subset(model_df2021, select=c(z_agb,prev_z_agb,yr, z_pr,z_tmmx,z_vpd,z_ndvi,pr_frac,
                                              prev_pfg_frac,z_ssm,z_bulk_dens,z_pr_z_ssm))

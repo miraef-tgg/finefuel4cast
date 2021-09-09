@@ -19,6 +19,8 @@ clim<-clim_data_orig
 spat<-spat_data_orig
 nLocs<-nrow(spat)
 
+memory.limit(10000000000)
+
 ## ---------------------------------------------- agb  ------------------------------------------------
 # prev year, and standardized
 
@@ -164,7 +166,7 @@ pr_data<-pr_data[, keeps]
 # View(pr_data)
 pr_data$avg_pr<-rowSums(pr_data, na.rm=TRUE)/35 #avg sum oct-march per year
 dim(pr_data)
-pr_data$avg_pr_annual<-rowSums(pr_data_all, na.rm=TRUE)/35 #avg sum per year
+pr_data$avg_pr_annual<-apply(pr_data_all, 1, sum, na.rm=TRUE)/35 #avg sum per year
 
 # pr_data$sd_pr<-apply(pr_data[,1:249], 1, sd, na.rm=TRUE)
 # I *think* I want to sd of current yr sum, so doing later, as vector

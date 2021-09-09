@@ -253,6 +253,9 @@ mean_prod_mod_par_fuels_mod_proc<-apply(Fspin_2021_prod_mod_par_fuels_mod_proc,2
 
 par(mfrow=c(2,2))
 
+png("Prod_Forecast_model/Figures/error_by_source.png")
+
+
 plot(density(mean_all), main="Fuels Model Process Uncertainty", 
      ylim=c(0,15), xlab="Variances of forecasts", ylab="frequency")
 polygon(density(mean_all), col=rgb(0,0,0,.2))
@@ -275,92 +278,40 @@ plot(density(mean_all), main="Productivity Model Parameter Uncertainty",
 polygon(density(mean_all), col=rgb(0,0,0,.2))
 polygon(density(mean_prod_mod_par),col=rgb(1,0,0,.2), border="purple")
 
-par(mfrow=c(1,1))
-plot('n')
-legend( "topright", legend = c("Total Uncertainty", "Fuels Model Process Uncertainty", "Productivity Model Process Uncertainty", 
-                               "Fuels Model Parameter Uncertainty","Productivity Model Parameter Uncertainty"),
-       col =c(rgb(0,0,0,.3),
-              rgb(0,1,.6,.4),
-              rgb(0,0,1,.4),
-              rgb(1,0,0,.4),
-              rgb(.5,0,1,.8)
-       ), pch=15)
-# 
+dev.off()
+
+#legend, separate
 # par(mfrow=c(1,1))
-# options(scipen=999)
-# uncertainty_source<-as.data.frame(matrix(NA,nrow=11,ncol=0))
-# uncertainty_source$source<-c("all sources", 
-#                              # "none",
-#                              "prod_process","prod_par", "fuels_process", "fuels_par",
-#                              "prod_all","fuels_all",
-#                              "prod_proc_fuels_proc",
-#                              "prod_proc_fuels_par",
-#                              "prod_par_fuels_par",
-#                              "prod_par_fuels_proc"
-#                              
-#                              )
+# plot('n')
+# legend( "topright", legend = c("Total Uncertainty", "Fuels Model Process Uncertainty", "Productivity Model Process Uncertainty", 
+#                                "Fuels Model Parameter Uncertainty","Productivity Model Parameter Uncertainty"),
+#        col =c(rgb(0,0,0,.3),
+#               rgb(0,1,.6,.4),
+#               rgb(0,0,1,.4),
+#               rgb(1,0,0,.4),
+#               rgb(.5,0,1,.8)
+#        ), pch=15)
 # 
-# uncertainty_source$uncert<-c(sd(mean_all),
-#                           # sd(mean_none),
-#                           sd(mean_prod_mod_proc),
-#                           sd(mean_prod_mod_par),
-#                           sd(mean_fuels_mod_proc),
-#                           sd(mean_fuels_mod_par),
-#                           sd(mean_prod_mod_all),
-#                           sd(mean_fuels_mod_all),
-#                           sd(mean_prod_mod_proc_fuels_mod_proc),
-#                           sd(mean_prod_mod_proc_fuels_mod_par),
-#                           sd(mean_prod_mod_par_fuels_mod_par),
-#                           sd(mean_prod_mod_par_fuels_mod_proc)
-#                           )
-# 
-# par(mfrow=c(1,1))
-# (uncertainty_source)
-# barplot(height=uncertainty_source$uncert,  names.arg=uncertainty_source$source, main = "2021 Forecast sources of uncertainty")
-# text(x=seq(0.8,12.8,1.2),y=0.02, labels=round(uncertainty_source$err,3))
-# 
-# barplot(height=uncertainty_source$uncert[1:5], 
-#         names.arg=uncertainty_source$source[1:5], main = "2021 Forecast sources of uncertainty \n all and one-way")
-# text(x=seq(0.8,5.8,1.2),y=0.02, labels=round(uncertainty_source$err[1:5],3))
-# 
-# 
-# barplot(height=uncertainty_source$err[6:11], 
-#         names.arg=uncertainty_source$source[6:11], main = "2021 Forecast sources of uncertainty  \n 2-way")
-# text(x=seq(0.8,6.8,1.2),y=0.02, labels=round(uncertainty_source$err[6:11],3))
-# 
-# 
-# ## one way
-# (uncertainty_source$perc<-uncertainty_source$uncert/sum(uncertainty_source$uncert[1])*100)
-# barplot(height=uncertainty_source$perc[c(4,2,5,3)], 
-#         names.arg=c( "process error", "process error" , "parameter error","parameter error"),
-#         main = "2021 Forecast sources of uncertainty", cex.main=3,
-#         col=c("red", "blue", "red", "blue", "gray"),
-#         ylab= "Percent of total uncertainty", cex.lab=2,
-#         ylim=c(0,100))
-# legend("topright", legend=c( "Fuels Model", "Productivity Forecast"), col = c("red", "blue") , pch=15, cex=2.5)
-# # text(x=seq(0.8,12.8,1.2),y=0.02, labels=round(uncertainty_source$err,3))
-# 
-# 
-# ## 2 way
-# (uncertainty_source)
-# "prod_proc_fuels_par" 
-# [5] "prod_par_fuels_par"   "prod_par_fuels_proc" 
-# 
-# names_temp<-c("productivity model", 
-#               "fuels model", 
-#               "prod model process \n  fuels model process",
-#               "prod model process \n fuels model parameter", 
-#               "prod model parameter \n fuels model parameter",
-#               "prod model parameter \n fuels model process"
-# )
-# barplot(height=uncertainty_source$perc[c(6:11)], 
-#         names.arg=names_temp,
-#         main = "2021 Forecast sources of uncertainty", cex.main=3,
-#         col=c("blue", "red", rep("purple",4)),
-#         ylab= "Percent of total uncertainty", cex.lab=2,
-#         ylim=c(0,100))
-# legend("topright", legend=c( "Fuels Model", "Productivity Forecast"), col = c("red", "blue") , pch=15, cex=2.5)
-# # text(x=seq(0.8,12.8,1.2),y=0.02, labels=round(uncertainty_source$err,3))
-# 
-# 
-# 
+
+#show plot
+plot(density(mean_all), main="Fuels Model Process Uncertainty", 
+     ylim=c(0,15), xlab="Variances of forecasts", ylab="frequency")
+polygon(density(mean_all), col=rgb(0,0,0,.2))
+polygon(density(mean_fuels_mod_proc),col=rgb(0,1,0,.2))
+# polygon(density(mean_fuels_mod_proc),fill=rgb(0,1,0,.2))
+
+plot(density(mean_all), main="Productivity Model Process Uncertainty", 
+     ylim=c(0,15), xlab="Variances of forecasts", ylab="frequency")
+polygon(density(mean_all), col=rgb(0,0,0,.2))
+polygon(density(mean_prod_mod_proc),col=rgb(0,0,1,.2))
+
+plot(density(mean_all), main="Fuels Model Parameter Uncertainty", 
+     ylim=c(0,15), xlab="Variances of forecasts", ylab="frequency")
+polygon(density(mean_all), col=rgb(0,0,0,.2))
+polygon(density(mean_fuels_mod_par),col=rgb(1,0,0,1))
+
+
+plot(density(mean_all), main="Productivity Model Parameter Uncertainty", 
+     ylim=c(0,115), xlab="Variances of forecasts", ylab="frequency")
+polygon(density(mean_all), col=rgb(0,0,0,.2))
+polygon(density(mean_prod_mod_par),col=rgb(1,0,0,.2), border="purple")

@@ -51,6 +51,7 @@ range(forecast_dat$yr)
 
 # Runs the forecast, null, ndvi, and climate_ndvi models referenced in paper
 source(file= "running_model_scripts/run_all_models.R")
+gc()
 
 # Runs the forecast model on all years 1988-2021 and creates point estimates
 source(file= "running_model_scripts/prod_cast_point_estimates.R")
