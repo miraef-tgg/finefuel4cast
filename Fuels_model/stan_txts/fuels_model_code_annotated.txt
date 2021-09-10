@@ -1,0 +1,69 @@
+// data type and structure that are used in the model
+ data{
+    int<lower=0> nLocs; //number of locations; number
+    int<lower=0> nYears; //number of total years; number
+    int <lower=0> nMiss; // the total number of not-missing observation data used in this model; number
+    int<lower=0> nOutputs; //the total number of latent fine fuel loads estimated in this model; number
+    vector[nLocs] P0; //the productivity value for a site the year before observation data begins; vector
+    vector[nOutputs] P; // the standardized productivity data for all locations and years; vector
+    int<lower=0> first_val_vec[nOutputs, 1 ] ;  // binary data corresponding with the productivity data;
+						// if 1 then that value is the inital for a location; 
+						// 1 dimension matrix of intgers (because you can't have vectors of integers in stan)
+    int<lower=0> S[nLocs, 1 ] ; //the number of subsamples taken at that location; 1 dimension matrix of intgers
+    int<lower=0> fuel_obs_index[nMiss, 2 ];  // indexes of non-missing fine fuels observation data matrix ('O') that are used in this model
+					     // first column is the row number index, second column is column number index
+    int<lower=0> prod_index[nMiss, 1];  // the index of productivity data
+    matrix[nLocs, nYears ] O;    // the standardized observation data, rows are different locations, columns are different years; matrix
+				 // there are values with missing data that are skipped over with the indexing data
+				 // as stan does not handle NAs, we replaced NAs with -10000
+  }
+
+//parameters being estimated
+parameters{
+  real alpha; //carryover parameter
+  real beta;  //conversion parameter
+  real<lower=0> sig_p; //process error
+  real<lower=0> sig_o; //observation error
+  vector[nOutputs] Fvec;  //latent fuel load
+  }
+
+//model code: this is confusing, we are sorry, there's really only two important lines here
+model {
+  // process model
+  for (x in 1:nOutputs){  //loop over every point in space and time where we are estimating latent fuel
+      int p_loc = 1; // count variable to update and reset throughout the loop
+      if(first_val_vec[x,1]==1){ //if this is the first year for this location
+         Fvec[x] ~ normal(P0[p_loc], .8); // initial latent fuel load for this location is centered around
+					  // the previous years productivity with uncertainty of 0.8
+         p_loc=p_loc+1; //update count variable
+       } else{ //if this is not the inital year for this location; 
+
+
+//**Below is the line that is our actual process model**
+         Fvec[x] ~ normal(alpha*(Fvec[x-1])+beta*P[x], sig_p); // latent fuel load of current year depends on previous year * carryover
+	  						       // and current year productivity * coversion, with associated process error
+       }   
+   }
+
+  //sampling model
+  for ( i in 1:nMiss){ //for every non-missing observed data point
+
+//** Below is the important line for our observation model**
+    O[fuel_obs_index[i,1],fuel_obs_index[i,2]]~normal( Fvec[prod_index[i,1]], sig_o/sqrt(S[fuel_obs_index[i,1],1])); 
+
+// The observed fuel load is a random variable drawn from the latent fuel load with an observation error that is related 
+// to the number of subsamples measaured to estimate the fuel load
+
+  }
+
+// priors are how we feel about the models parameters based on our knowledge of the system
+// and our initial exploration into our datasets
+  ///priors
+  beta~normal(.25,.25); //fairly uninformative
+  alpha~normal (.25,.25); //fairly uninformative
+  sig_o~normal(.5,.1)T[0,]; //pretty informative; truncated at zero (must be postive.) This is based on our subsample data
+  sig_p~normal(0, .25)T[0,]; //fairly uninformated; truncated at zero (must be postive)
+
+}
+
+
