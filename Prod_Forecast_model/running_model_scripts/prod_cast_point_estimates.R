@@ -91,51 +91,49 @@ write.csv(all_casts,"prod_model_outputs/forecast2021/prod_cast_1988_2021.csv",ro
 
 #check...residuals and fitted values should match residuals form model rds files
 
-#format actual data 1987-2020
-prod_data_check<-matrix(NA, nrow=nLocs, ncol=33)
-
-count<-1
-#not including 1987
-for ( i in 1:34){
-  prod_data_check[1:nLocs, count]<-model_df$z_agb[(nLocs*(i-1)+1):(i*nLocs)]
-  count=count+1
-}
-model_df[48273,1:10]
-
-model_df[48274,1:10]
-
-subset(model_df, model_df$yr==1988)[1,1:10]
-
-prod_data_check<-as.data.frame(prod_data_check)
-names(prod_data_check)<-paste0(rep("prod",33), seq(1988,2020,1))
-rand_subset<-sample(1:nLocs, 5000)
-
-
-resids_df_check<-matrix(NA, nrow=nLocs, ncol=33)
-
-predictions_lm<-readRDS("prod_model_outputs/march_forecast_lm.rds")
-resids<-predictions_lm$resids
-mod<-predictions_lm$mod_fit
-resids2<-mod$residuals
-
-coefficients(mod)
-
-for (i in 1:33){
-  # plot(prod_data_check[rand_subset,i],all_casts[rand_subset,i] )
-  # print(paste0((1987+i), " : correlation = " , cor(prod_data_check[,i], all_casts[,i])))
-  print(paste0((1987+i), " :hindcast mape = " , mean(abs(prod_data_check[,i]- all_casts[,i]))))
-  print(paste0((1987+i), " :from model mape = " , mean(abs(resids[,(i)]))))
-  resids_df_check[,i]<- all_casts[,i] - prod_data_check[,i]
-  
-}
-
-
-plot(resids[1:50,1],as.vector(resids2[1:50]))
-plot(resids[1:50,1],resids_df_check[1:50,1])
-
-
-plot(all_casts[,13], prod_data_check[,13])
-
-
-plot(y=all_casts[777,1:33], x=seq(1988,2020), col="red", type="l")
-lines(y=prod_data_check[777,], x=seq(1988,2020),col="black")
+# #format actual data 1987-2020
+# prod_data_check<-matrix(NA, nrow=nLocs, ncol=34)
+# 
+# count<-1
+# #not including 1987
+# for ( i in 1:34){
+#   prod_data_check[1:nLocs, count]<-model_df$z_agb[(nLocs*(i-1)+1):(i*nLocs)]
+#   count=count+1
+# }
+# model_df[48273,1:10]
+# 
+# model_df[48274,1:10]
+# 
+# subset(model_df, model_df$yr==1988)[1,1:10]
+# 
+# prod_data_check<-as.data.frame(prod_data_check)
+# names(prod_data_check)<-paste0(rep("prod",33), seq(1988,2020,1))
+# rand_subset<-sample(1:nLocs, 1000)
+# 
+# 
+# resids_df_check<-matrix(NA, nrow=nLocs, ncol=33)
+# 
+# predictions_lm<-readRDS("prod_model_outputs/march_forecast_lm.rds")
+# resids<-predictions_lm$resids
+# mod<-predictions_lm$mod_fit
+# resids2<-mod$residuals
+# 
+# coefficients(mod)
+# 
+# for (i in 1:33){
+#   # plot(prod_data_check[rand_subset,i],all_casts[rand_subset,i] )
+#   # print(paste0((1987+i), " : correlation = " , cor(prod_data_check[,i], all_casts[,i])))
+#   print(paste0((1987+i), " :hindcast mape = " , mean(abs(prod_data_check[,i]- all_casts[,i]))))
+#   print(paste0((1987+i), " :from model mape = " , mean(abs(resids[,(i)]))))
+#   resids_df_check[,i]<- all_casts[,i] - prod_data_check[,i]
+#   
+# }
+# 
+# 
+# plot(resids[1:50,1],as.vector(resids2[1:50]))
+# plot(resids[1:50,1],resids_df_check[1:50,1])
+# plot(all_casts[,13], prod_data_check[,13])
+# 
+# 
+# plot(y=all_casts[777,1:33], x=seq(1988,2020), col="red", type="l")
+# lines(y=prod_data_check[777,], x=seq(1988,2020),col="black")
