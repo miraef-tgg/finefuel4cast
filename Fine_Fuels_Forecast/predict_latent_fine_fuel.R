@@ -1,4 +1,4 @@
-#This script makes hindcasts of latent fine fuel from 1988-2020 and forecasts for 2021
+#This script makes hindcasts of latent fine fuel from 1988-2020 and forecasts for 2021 with a 'spin-up' on real prod data of 10 years
 
 #---------- loading pcks, data, model-------------
 
@@ -133,11 +133,12 @@ prod_data[555,]
 
 #year 1 of latent = 1998
 plot(apply(Fspin_iters[1:100,], 1,mean), apply(Fspin_iters_check[1:100,],1,mean))
-plot(apply(Fspin_iters[1:500,], 1,mean), prod_data[1:500,12], pch=19)
+plot(apply(Fspin_iters[1:500,], 1,mean), prod_data[1:500,12], pch=19) #should NOT be similar
+plot(apply(Fspin_iters[1:500,], 1,mean), prod_data[1:500,11], pch=19) #should be similar
 
 #1998...are you off by a year? ir matches better next year?
-cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,11]) #forecast w/ prev year
-cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,12]) #forecast w/ current year
+cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,11]) #forecast w/ 1987 prod
+cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,12]) #forecast w/ 1988 year
 cor(apply(Fspin_iters_check[(nLocs+1):(nLocs*2),], 1,mean), prod_data[,12]) #??
 
 #2020
@@ -174,9 +175,10 @@ for ( y in 1:24){
 
 dim(cur_Fspin) 
 dim(Fspin_iters_90)
-
+###################3problem is somehwere in here!!!!!!!!!!!!
 # backtransform: run first chunk of march_all_lmm_predictions_z.R
 model_df2<-read.csv("Prod_Forecast_model/gee_4cast_data/model_csvs/march_all_model_csv.csv")
+
 agb<-model_df2$agb
 agb_m<-matrix(NA,nrow=nLocs,ncol=34)
 
@@ -185,7 +187,8 @@ for (i in 1:34){
   # print(paste0((nLocs*(i-1)+1), " : " , (i*nLocs)))
 }
 
-long_term_sd<-apply(agb_m,1,sd)
+agb_m[1:10,]
+long_term_sd<-apply(agb_m,1,sd, na.rm=T)
 long_term_mean<-apply(agb_m,1,mean)
 
 
@@ -210,6 +213,7 @@ range(Fspin_perc, na.rm=T)
 colMeans(Fspin_10_perc)
 colMeans(Fspin_90_perc)
 
+par(mfrow=c(1,1))
 nYears<-24
 plot(x=seq(1998,2021), y=colMeans(Fspin_10_perc), col="red", lwd=2, lty=2, type="l", ylim=c(-50,50),
      main = "Percent above long-term normal", xlab="year", ylab="% above long term average", cex.main=2)
@@ -219,12 +223,19 @@ lines(x=seq(1998,2021), y=rep(0,24), lty=2)
 legend("topright", legend= c("10% CI", "90% CI"), col="red", lty=2, lwd=2, cex=2)
 
 ##by district::
-districts<-read.csv("Fine_Fuels_forecast/coords.csv")
-districts$long_lat<-paste0(substr(districts$long,1,7), "_", substr(districts$lat,1,7))
 loc_keeps<-read.csv("Prod_Forecast_model/prod_model_outputs/loc_keeps.csv")
+names(loc_keeps)<-c("X","long", "lat", "year", "keeps")
+loc_keeps<-subset(loc_keeps, loc_keeps$year==1987)
+(loc_keeps[1:10,])
+
+coords<-district_coords
+
+districts<-as.data.frame(district_coords)
+districts$long_lat<-paste0(substr(districts$long,1,7), "_", substr(districts$lat,1,7))
 coords<-as.data.frame(loc_keeps)
 coords$long_lat<-paste0(substr(coords$long,1,7), "_", substr(coords$lat,1,7))
-
+coords[1:10,]
+districts[1:10,]
 
 dim(coords); dim(districts)
 coords_dist<-plyr::join(coords, districts, by ="long_lat", type="left")
@@ -244,6 +255,6 @@ names(Fspin_iters_est_sp)<-c(paste0(rep("pred",24), seq(1998,2021)), "long", "la
 #this seems potentially useful too
 latent_forecast_perc<-list(Fspin_iters_10_sp, Fspin_iters_90_sp,Fspin_iters_est_sp)
 # names(latent_forecast_perc)<-c("perc_above_avg_10CI", "perc_above_avg_10CI","perc_above_avg_10CI")
-names(fuelcast_perc)<-c("CI10", "CI90", "mean")
+names(latent_forecast_perc)<-c("CI10", "CI90", "mean")
 
 saveRDS(latent_forecast_perc, "Fine_Fuels_Forecast/output_data/latent_fuel_perc_sp.rds")

@@ -15,8 +15,8 @@ names(Fspin_iters_10_sp)<-c(paste0("fuel", seq(1998,2021)), "long", "lat" , "dis
 names(Fspin_iters_90_sp)<-c(paste0("fuel", seq(1998,2021)), "long", "lat" , "district")
 names(Fspin_iters_est_sp)<-c(paste0("fuel", seq(1998,2021)), "long", "lat", "district")
 dim(Fspin_iters_est_sp)
-(districts<-as.vector(na.omit(unique(latent_forecast_perc$PARENT_N))))
-names(Fspin_iters_90_sp)
+(districts<-as.vector(na.omit(unique(Fspin_iters_10_sp$district))))
+
 
 nYears<-24
 
