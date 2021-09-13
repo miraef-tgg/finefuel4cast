@@ -40,7 +40,7 @@ for ( i in 1:length(sig_o_vals)){
 
 plot(sig_o_vals, sig_o_trans_vals, ylim=c(0,8000), pch=19)
 
-## stan
+## run loop with high alpha
 
 #sim params
 alpha_sim=.5;beta_sim=.25;sig_p_sim=.6
@@ -57,8 +57,30 @@ for ( sim in 1:length(sig_o_vals)) {
   print(paste0( "sim: " , sig_o_vals[sim]," num: ", sim ))
   
   source(file="fuels_model_run/sim_loop_code.R")
-  saveRDS(fit1,file= paste0("model_outputs/simulation/sig_o_",sig_o_vals[sim], ".rds" ))
+  saveRDS(fit1,file= paste0("model_outputs/simulation/alpha/sig_o_",sig_o_vals[sim], ".rds" ))
 
 }
 
+
+
+## run loop with low beta
+
+#sim params
+alpha_sim=.1;beta_sim=.5;sig_p_sim=.6
+
+alpha_vec<-vector(); alpha025_vec<-vector(); alpha975_vec<-vector()
+beta_vec<-vector(); beta025_vec<-vector(); beta975_vec<-vector()
+sig_o_vec<-vector(); sig_o025_vec<-vector(); sig_o975_vec<-vector()
+sig_p_vec<-vector(); sig_p025_vec<-vector(); sig_p975_vec<-vector()
+sim<-1
+
+for ( sim in 1:length(sig_o_vals)) {
+  # for ( i in 1:2){
+  sig_o_sim=sig_o_vals[sim]
+  print(paste0( "sim: " , sig_o_vals[sim]," num: ", sim ))
+  
+  source(file="fuels_model_run/sim_loop_code.R")
+  saveRDS(fit1,file= paste0("model_outputs/simulation/beta/sig_o_",sig_o_vals[sim], ".rds" ))
+  
+}
 
