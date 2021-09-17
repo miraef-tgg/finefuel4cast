@@ -36,10 +36,9 @@ coords2<-as.data.frame(t)
 # View(coords2[1:10,])
 names(coords2)
 keeps<-c("long", "lat","PARENT_N" )
-coords3<-coords2[,keeps]
-district_coords<-coords3
+district_coords<-coords2[,keeps]
 
 
-# write.csv(coords3,"G:/My Drive/finefuel4cast/Fuels_forecast/spin_up/coords.csv" )
+write.csv(district_coords,"Fine_Fuels_forecast/district_coords.csv" )
 
 

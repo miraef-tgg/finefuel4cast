@@ -118,39 +118,39 @@ for ( i in 1:nIters){
 
 #--------------------------checking-------------------
 
-prod_preds_subset[1:10]
-prod_preds[1:10,34]
-
-# check; rows = locations and years, columns = iterations
-# View(Fspin_iters[(nLocs-30):(nLocs+30),])
-# View(Fspin_iters_check[(nLocs-30):(nLocs+30),])
-#nrow(Fspin_iters)/nLocs
-
-# does latent fuel load look like productivity of that year?
-(Fspin_iters[555,]) #first year= 1989
-(Fspin_iters_check[555,])
-prod_data[555,]
-
-#year 1 of latent = 1998
-plot(apply(Fspin_iters[1:100,], 1,mean), apply(Fspin_iters_check[1:100,],1,mean))
-plot(apply(Fspin_iters[1:500,], 1,mean), prod_data[1:500,12], pch=19) #should NOT be similar
-plot(apply(Fspin_iters[1:500,], 1,mean), prod_data[1:500,11], pch=19) #should be similar
-
-#1998...are you off by a year? ir matches better next year?
-cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,11]) #forecast w/ 1987 prod
-cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,12]) #forecast w/ 1988 year
-cor(apply(Fspin_iters_check[(nLocs+1):(nLocs*2),], 1,mean), prod_data[,12]) #??
-
-#2020
-cor(apply(Fspin_iters_check[(nLocs*23+1):(nLocs*24),], 1,mean), prod_data[,34]) #??
-plot(apply(Fspin_iters_check[(nLocs*23+1):(nLocs*24),], 1,mean), prod_data[,33]) #??
-
-
-
-# Fspin_iters_check[555,], pch=19)
-plot(Fspin_iters[5,], Fspin_iters_check[5,], pch=25)
-
-prod_data[555,]
+# prod_preds_subset[1:10]
+# prod_preds[1:10,34]
+# 
+# # check; rows = locations and years, columns = iterations
+# # View(Fspin_iters[(nLocs-30):(nLocs+30),])
+# # View(Fspin_iters_check[(nLocs-30):(nLocs+30),])
+# #nrow(Fspin_iters)/nLocs
+# 
+# # does latent fuel load look like productivity of that year?
+# (Fspin_iters[555,]) #first year= 1989
+# (Fspin_iters_check[555,])
+# prod_data[555,]
+# 
+# #year 1 of latent = 1998
+# plot(apply(Fspin_iters[1:100,], 1,mean), apply(Fspin_iters_check[1:100,],1,mean))
+# plot(apply(Fspin_iters[1:500,], 1,mean), prod_data[1:500,12], pch=19) #should NOT be similar
+# plot(apply(Fspin_iters[1:500,], 1,mean), prod_data[1:500,11], pch=19) #should be similar
+# 
+# #1998...are you off by a year? ir matches better next year?
+# cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,11]) #forecast w/ 1987 prod
+# cor(apply(Fspin_iters_check[1:nLocs,], 1,mean), prod_data[,12]) #forecast w/ 1988 year
+# cor(apply(Fspin_iters_check[(nLocs+1):(nLocs*2),], 1,mean), prod_data[,12]) #??
+# 
+# #2020
+# cor(apply(Fspin_iters_check[(nLocs*23+1):(nLocs*24),], 1,mean), prod_data[,34]) #??
+# plot(apply(Fspin_iters_check[(nLocs*23+1):(nLocs*24),], 1,mean), prod_data[,33]) #??
+# 
+# 
+# 
+# # Fspin_iters_check[555,], pch=19)
+# plot(Fspin_iters[5,], Fspin_iters_check[5,], pch=25)
+# 
+# prod_data[555,]
 
 # View(Fspin_iters[(nLocs-30):(nLocs+30),])
 
@@ -175,7 +175,7 @@ for ( y in 1:24){
 
 dim(cur_Fspin) 
 dim(Fspin_iters_90)
-###################3problem is somehwere in here!!!!!!!!!!!!
+
 # backtransform: run first chunk of march_all_lmm_predictions_z.R
 model_df2<-read.csv("Prod_Forecast_model/gee_4cast_data/model_csvs/march_all_model_csv.csv")
 
@@ -228,7 +228,8 @@ names(loc_keeps)<-c("X","long", "lat", "year", "keeps")
 loc_keeps<-subset(loc_keeps, loc_keeps$year==1987)
 (loc_keeps[1:10,])
 
-coords<-district_coords
+district_coords<-read.csv("Fine_Fuels_forecast/district_coords.csv" )
+
 
 districts<-as.data.frame(district_coords)
 districts$long_lat<-paste0(substr(districts$long,1,7), "_", substr(districts$lat,1,7))
