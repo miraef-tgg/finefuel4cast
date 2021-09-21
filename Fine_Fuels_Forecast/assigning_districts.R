@@ -39,6 +39,6 @@ keeps<-c("long", "lat","PARENT_N" )
 district_coords<-coords2[,keeps]
 
 
-write.csv(district_coords,"Fine_Fuels_forecast/district_coords.csv" )
+write.csv(district_coords,"Fine_Fuels_forecast/output_data/district_coords.csv" )
 
 

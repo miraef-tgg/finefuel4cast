@@ -253,7 +253,7 @@ mean_prod_mod_par_fuels_mod_proc<-apply(Fspin_2021_prod_mod_par_fuels_mod_proc,2
 
 par(mfrow=c(2,2))
 
-png("Prod_Forecast_model/Figures/error_by_source.png")
+png("Fine_Fuels_Forecast/Figures/error_by_source.png")
 
 
 plot(density(mean_all), main="Fuels Model Process Uncertainty", 
@@ -294,24 +294,25 @@ dev.off()
 # 
 
 #show plot
+par(mfrow=c(2,2))
 plot(density(mean_all), main="Fuels Model Process Uncertainty", 
-     ylim=c(0,15), xlab="Variances of forecasts", ylab="frequency")
+     ylim=c(0,25), xlab="", ylab="Frequency", cex.lab=1.5)
 polygon(density(mean_all), col=rgb(0,0,0,.2))
 polygon(density(mean_fuels_mod_proc),col=rgb(0,1,0,.2))
 # polygon(density(mean_fuels_mod_proc),fill=rgb(0,1,0,.2))
 
 plot(density(mean_all), main="Productivity Model Process Uncertainty", 
-     ylim=c(0,15), xlab="Variances of forecasts", ylab="frequency")
+     ylim=c(0,25), xlab="", ylab="")
 polygon(density(mean_all), col=rgb(0,0,0,.2))
 polygon(density(mean_prod_mod_proc),col=rgb(0,0,1,.2))
 
 plot(density(mean_all), main="Fuels Model Parameter Uncertainty", 
-     ylim=c(0,15), xlab="Variances of forecasts", ylab="frequency")
+     ylim=c(0,25), xlab="Variances of forecasts", ylab="Frequency", cex.lab=1.5)
 polygon(density(mean_all), col=rgb(0,0,0,.2))
 polygon(density(mean_fuels_mod_par),col=rgb(1,0,0,1))
 
 
 plot(density(mean_all), main="Productivity Model Parameter Uncertainty", 
-     ylim=c(0,115), xlab="Variances of forecasts", ylab="frequency")
+     ylim=c(0,25), xlab="Variances of forecasts", ylab="", cex.lab=1.5, cex.main=1)
 polygon(density(mean_all), col=rgb(0,0,0,.2))
 polygon(density(mean_prod_mod_par),col=rgb(1,0,0,.2), border="purple")

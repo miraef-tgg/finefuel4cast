@@ -213,20 +213,20 @@ range(Fspin_perc, na.rm=T)
 colMeans(Fspin_10_perc)
 colMeans(Fspin_90_perc)
 
-par(mfrow=c(1,1))
-nYears<-24
-plot(x=seq(1998,2021), y=colMeans(Fspin_10_perc), col="red", lwd=2, lty=2, type="l", ylim=c(-50,50),
-     main = "Percent above long-term normal", xlab="year", ylab="% above long term average", cex.main=2)
-lines(x=seq(1998,2021), y=colMeans(Fspin_90_perc), col="red", lty=2, lwd=2)
-lines(x=seq(1998,2021), y=colMeans(Fspin_perc), col="red", lwd=3)
-lines(x=seq(1998,2021), y=rep(0,24), lty=2)
-legend("topright", legend= c("10% CI", "90% CI"), col="red", lty=2, lwd=2, cex=2)
-
-##by district::
-loc_keeps<-read.csv("Prod_Forecast_model/prod_model_outputs/loc_keeps.csv")
-names(loc_keeps)<-c("X","long", "lat", "year", "keeps")
-loc_keeps<-subset(loc_keeps, loc_keeps$year==1987)
-(loc_keeps[1:10,])
+# par(mfrow=c(1,1))
+# nYears<-24
+# plot(x=seq(1998,2021), y=colMeans(Fspin_10_perc), col="red", lwd=2, lty=2, type="l", ylim=c(-50,50),
+#      main = "Percent above long-term normal", xlab="year", ylab="% above long term average", cex.main=2)
+# lines(x=seq(1998,2021), y=colMeans(Fspin_90_perc), col="red", lty=2, lwd=2)
+# lines(x=seq(1998,2021), y=colMeans(Fspin_perc), col="red", lwd=3)
+# lines(x=seq(1998,2021), y=rep(0,24), lty=2)
+# legend("topright", legend= c("10% CI", "90% CI"), col="red", lty=2, lwd=2, cex=2)
+# 
+# ##by district::
+# loc_keeps<-read.csv("Prod_Forecast_model/prod_model_outputs/loc_keeps.csv")
+# names(loc_keeps)<-c("X","long", "lat", "year", "keeps")
+# loc_keeps<-subset(loc_keeps, loc_keeps$year==1987)
+# (loc_keeps[1:10,])
 
 district_coords<-read.csv("Fine_Fuels_forecast/district_coords.csv" )
 

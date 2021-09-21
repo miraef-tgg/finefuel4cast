@@ -1,3 +1,4 @@
+#makes 3 spatial maps; mean and 8-% confidence itnerval of 2021 forecast
 
 #---------- loading pcks, data, model-------------
 
@@ -58,23 +59,22 @@ leg1[5,]<-c((leg_vals[5]), subset(col_df, round(as.numeric(col_df$c_val),2)==(le
 leg1
 
 
-par(mfrow=c(1,3))
-png("Prod_Forecast_model/Figures/forecast2021.png")
+png("Fine_Fuels_Forecast/Figures/forecast2021.png")
 
+par(mfrow=c(1,3))
 names(col_df)<-c("fuel", "color.name")
+
 #new sp object and map for 10% data
 spin_sp<-as.data.frame(cbind(spin_10, coords)); names(spin_sp)<-c("fuel", "long", "lat")
 col_resid<-plyr::join(spin_sp, col_df, by="fuel")
 sp3<-col_resid; sp3$lat<-as.numeric(sp3$lat);  sp3$long<-as.numeric(sp3$long)
 coordinates(sp3)<-~long+lat
 print(plot('n',x=sp3$long,y=sp3$lat,xlab="Longitude", ylab="Latitude", 
-           main=paste("10% CI fine fuel forecast"), cex.lab=2))
+           main=paste("10% confidence interval"), cex.lab=2, cex.axis=2,cex.main=2))
 print(abline(h = 42, col = "gray", lwd = 700))
 print(points(x=sp3$long,y=sp3$lat,col=sp3$color.name,pch=15,cex=1.5))
 # lines(blm_admin, col="darkgray", lwd=2)
 # lines(blm_states,col="darkgray", lwd=3)
-
-
 
 #join colors and values into df, make into spatial object
 spin_sp<-as.data.frame(cbind(spin_mean, coords)); names(spin_sp)<-c("fuel", "long", "lat")
@@ -83,15 +83,11 @@ col_resid<-plyr::join(spin_sp, col_df, by="fuel")
 sp<-col_resid; sp$lat<-as.numeric(sp$lat);  sp$long<-as.numeric(sp$long)
 coordinates(sp)<-~long+lat
 
-
 #map of mean estimates
 print(plot('n',x=sp$long,y=sp$lat,xlab="", ylab="", 
-           main=paste("Fine Fuel Forecast: \n  march 2021 "), cex.main=2))
+           main=paste("Fine Fuel Forecast: \n  March, 2021 "), cex.lab=2,cex.main=2,cex.axis=2))
 print(abline(h = 42, col = "gray", lwd = 700))
 print(points(x=sp$long,y=sp$lat,col=sp$color.name,pch=15,cex=1.5))
-# lines(blm_admin, col="darkgray", lwd=2)
-# lines(blm_states,col="darkgray", lwd=3)
-
 
 #new sp object and map for 90% data
 spin_sp<-as.data.frame(cbind(spin_90, coords)); names(spin_sp)<-c("fuel", "long", "lat")
@@ -99,63 +95,20 @@ col_resid<-plyr::join(spin_sp, col_df, by="fuel")
 sp2<-col_resid; sp2$lat<-as.numeric(sp2$lat);  sp2$long<-as.numeric(sp2$long)
 coordinates(sp2)<-~long+lat
 print(plot('n',x=sp2$long,y=sp2$lat,xlab="", ylab="", 
-           main=paste("90% CI fine fuel forecast ")))
+           main=paste("90% confidence interval"), cex.axis=2,cex.lab=2,cex.main=2))
 print(abline(h = 42, col = "gray", lwd = 700))
-print(points(x=sp2$long,y=sp2$lat,col=sp2$color.name,pch=15,cex=.5))
-print(legend("topright",legend=paste0(c(leg1[,1]), "%"), col=leg1[,2], pch=19, bg="lightgray", cex=1.5, 
-             title = " % above long term average"))
-
-
-# lines(blm_admin, col="darkgray", lwd=2)
-# lines(blm_states,cCol="darkgray", lwd=3)
+print(points(x=sp2$long,y=sp2$lat,col=sp2$color.name,pch=15,cex=1.5))
 
 dev.off()
 
 
-#make it appear, not saved
-("Prod_Forecast_model/Figures/forecast2021.png")
-
-names(col_df)<-c("fuel", "color.name")
-#new sp object and map for 10% data
-spin_sp<-as.data.frame(cbind(spin_10, coords)); names(spin_sp)<-c("fuel", "long", "lat")
-col_resid<-plyr::join(spin_sp, col_df, by="fuel")
-sp3<-col_resid; sp3$lat<-as.numeric(sp3$lat);  sp3$long<-as.numeric(sp3$long)
-coordinates(sp3)<-~long+lat
-print(plot('n',x=sp3$long,y=sp3$lat,xlab="Longitude", ylab="Latitude", 
-           main=paste("10% CI fine fuel forecast"), cex.lab=2))
-print(abline(h = 42, col = "gray", lwd = 700))
-print(points(x=sp3$long,y=sp3$lat,col=sp3$color.name,pch=15,cex=1.5))
-# lines(blm_admin, col="darkgray", lwd=2)
-# lines(blm_states,col="darkgray", lwd=3)
-
-
-
-#join colors and values into df, make into spatial object
-spin_sp<-as.data.frame(cbind(spin_mean, coords)); names(spin_sp)<-c("fuel", "long", "lat")
-col_df$fuel<-as.character(col_df$fuel)
-col_resid<-plyr::join(spin_sp, col_df, by="fuel")
-sp<-col_resid; sp$lat<-as.numeric(sp$lat);  sp$long<-as.numeric(sp$long)
-coordinates(sp)<-~long+lat
-
-
-#map of mean estimates
-print(plot('n',x=sp$long,y=sp$lat,xlab="", ylab="", 
-           main=paste("Fine Fuel Forecast: \n  march 2021 "), cex.main=2))
-print(abline(h = 42, col = "gray", lwd = 700))
-print(points(x=sp$long,y=sp$lat,col=sp$color.name,pch=15,cex=1.5))
-# lines(blm_admin, col="darkgray", lwd=2)
-# lines(blm_states,col="darkgray", lwd=3)
-
-
-#new sp object and map for 90% data
-spin_sp<-as.data.frame(cbind(spin_90, coords)); names(spin_sp)<-c("fuel", "long", "lat")
-col_resid<-plyr::join(spin_sp, col_df, by="fuel")
-sp2<-col_resid; sp2$lat<-as.numeric(sp2$lat);  sp2$long<-as.numeric(sp2$long)
-coordinates(sp2)<-~long+lat
-print(plot('n',x=sp2$long,y=sp2$lat,xlab="", ylab="", 
-           main=paste("90% CI fine fuel forecast ")))
-print(abline(h = 42, col = "gray", lwd = 700))
-print(points(x=sp2$long,y=sp2$lat,col=sp2$color.name,pch=15,cex=.5))
-print(legend("topright",legend=paste0(c(leg1[,1]), "%"), col=leg1[,2], pch=19, bg="lightgray", cex=1.5, 
+#make legend
+par(mfrow=c(1,1))
+png("Fine_Fuels_Forecast/Figures/forecast2021_legend.png") 
+plot(1,1)
+print(legend("topright",legend=paste0(c(leg1[,1]), "%"), col=leg1[,2], pch=19, bg="lightgray", cex=3, 
              title = " % above long term average"))
+
+dev.off()
+
 
