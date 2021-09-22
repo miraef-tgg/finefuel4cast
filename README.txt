@@ -1,0 +1,7 @@
+This code accompanies Ensley-Field et al 2021. Each folder contains a ‘run_everything.R’ script that can be used to recreate our analysis, however, the data needed for the ‘Prod_Forecast_Model’ must be downloaded by the user using scripts we provide, and manually put into the correct folder. You can also email the authors and we can email you these data.
+
+1. The ‘Fuels_Model’ folder contains code for developing, checking, and visualizing our Bayesian state-space model that represents the ecological process of productivity accruing in a system and becoming fine fuels. It uses data provided in an accompanying csv.
+
+2. The ‘Prod_Forecast_Model’ folder contains code that creates a forecast for herbaceous productivity based on data downloaded from Google Earth Engine over the desired spatial extent. We provide the GEE code needed to download this data over a spatial extent and resolution of the user’s choice. The default is 10000m2 over the same spatial extent as in Ensley-Field et al 2021. The data is not included in this repository.
+
+3. The ‘Fine_Fuels_Forecast’ folder uses the outputs from the parameters in the Fuels Model and forecast of 2021, as well as hindcasts of 1987-2020, to create a forecast map of 2021 latent fuel as hindcasts of years 1987-2020. We include data to create time series figures by BLM district if data is downloaded at the spatial extent included in our publication. This also provides code to partition sources of uncertainty and creates a figure showing the amount of uncertainty from each source.
