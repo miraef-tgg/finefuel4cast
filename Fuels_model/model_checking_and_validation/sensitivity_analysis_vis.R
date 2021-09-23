@@ -114,7 +114,7 @@ for ( v in 1:9){
                                  nIters=1000, mod_name="stan",
                                  fuel_dat=fuel_data_z, prod_dat=prod_data_z,
                                  prod_start_val_vec<-meta_dat$P0, mean_samp=4.6,
-                                 sig_f_par=sig_f, prod_m_match=meta_dat$prod_m_match)
+                                 sig_f_par=sig_f, prod_m_match=meta_dat$prod_m_match, show_plot = F)
     cov_par[i]<-uncertainty[1,1]
     cov_obs[i]<-uncertainty[2,1]
     cov_proc[i]<-uncertainty[3,1]

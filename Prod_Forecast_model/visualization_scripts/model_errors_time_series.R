@@ -57,11 +57,11 @@ par(mfrow=c(1,1))
 
 # Figure 4
 png( "figures/time_series/mape.png")
-plot(mape[,5],mape[,1], 'l',ylim=c(.35,1.75),  main= "Mean Absolute Prediction Error by model", col="black", cex.main=3,
-     lwd=2,
-     ylab= "Mean Absolute Predictive Error (standardized)",
-     xlab="Year", cex.lab=1.5) 
-lines(mape[,5],mape[,2], 'l', col="blue",lwd=3)
+plot(mape[,5],mape[,1], 'l',ylim=c(.35,1.75),  main= "Mean Absolute Prediction Error", col="black", cex.main=2.4,
+     lwd=3,
+     ylab= "Mean Absolute Predictive Error",
+     xlab="Year", cex.lab=1.5, cex.axis=1.5) 
+lines(mape[,5],mape[,2], 'l', col="blue",lwd=2)
 lines(mape[,5],mape[,3], 'l', col="red", lwd=2)
 lines(mape[,5],mape[,4], 'l', col="purple",lwd=2)
 legend("topleft", pch=19,legend=c("null model", "forecast", "clim", "clim_and_ndvi"), 
@@ -83,13 +83,14 @@ dev.off()
 
 png( "figures/time_series/mean_bias.png")
 plot(mbias[,5],mbias[,1], 'l',ylim=c(-1,1.5), main= "Mean Bias by model", col="black", cex.main=3,
-     lwd=2,
-     ylab= "Mean Bias (standardized)",
+     lwd=3,
+     ylab= "Mean Bias (standardized)", cex.lab=2,cex.axis=1.5,
      xlab="Year", cex.lab=1.5) 
-lines(mbias[,5],mbias[,2], 'l',ylim=c(-.5,.5), col="blue")
-lines(mbias[,5],mbias[,3], 'l',ylim=c(-.5,.5), col="red")
-lines(mbias[,5],mbias[,4], 'l',ylim=c(-.5,.5), col="purple")
-legend("topright", pch=19,legend=c("spatial only/null model", "forecast", "clim", "clim_and_ndvi"), col=c("black","blue","red", "purple"))
+lines(mbias[,5],mbias[,2], 'l',ylim=c(-.5,.5), col="blue",lwd=2)
+lines(mbias[,5],mbias[,3], 'l',ylim=c(-.5,.5), col="red",lwd=2)
+lines(mbias[,5],mbias[,4], 'l',ylim=c(-.5,.5), col="purple",lwd=2)
+legend("topright", pch=19,legend=c("spatial only/null model", "forecast", "clim", "clim_and_ndvi"), 
+       col=c("black","blue","red", "purple"),cex=3)
 dev.off()
 
 

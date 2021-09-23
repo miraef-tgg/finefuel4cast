@@ -24,7 +24,7 @@ source(file = "Fine_Fuels_Forecast/forecast_2021_map.R")
 # make latent fine fuel time series figures 1998-2021
 source(file = "Fine_Fuels_Forecast/time_series_by_district.R") 
 #look
-browseURL("Fine_Fuels_Forecast/Figures/time_series_districts.png")
+# browseURL("Fine_Fuels_Forecast/Figures/time_series_districts.png")
 
 # error partitioning
 source(file = "Fine_Fuels_Forecast/partition_error.R")
