@@ -1,5 +1,3 @@
-# We wanted to make sure the way we run the Fuels Model ehis makes three plots
-
 ## ------------------------- data/pcks -------------------------------------------
 if (!require("pacman")) install.packages("pacman"); library(pacman)
 p_load(rstan,dplyr,tidyr,shinystan,here,rstudioapi,readtext, RColorBrewer, install = TRUE, update = getOption("pac_update"), character.only = FALSE)
@@ -47,6 +45,7 @@ prod_sim[,1:35]<-prod_data_orig
 for ( i in 1:nrow(prod_data_orig)){
   prod_sim[i,35:1000]<-rnorm((1001-35),mean=mean(prod_data_orig[i,]),sd(prod_data_orig[i,]))
 }
+
 #look
 # plot(prod_sim[1,], type="l")
 # prod_sim[1:5,30:40]
@@ -55,12 +54,15 @@ rand<-sample.int(148,size=5)
 #look
 par(mfrow=c(1,1))
 sim_length<-200
-plot("n", main="Simulated prod: \n years 1-34 are real data \n years 35+ are simulations based on years 1-34", 
-     xlim=c(0,sim_length), ylim=c(0,2000))
-cols<-brewer.pal(n=5,"Spectral")
-for(i in 1:length(rand)){
-  lines((prod_sim[rand[i],1:sim_length]),type="l", col=cols[i])
-}
+
+# plot(1, main="Simulated prod: \n years 1-34 are real data \n years 35+ are simulations based on years 1-34", 
+#      xlim=c(0,sim_length), ylim=c(0,2000), col="white")
+# cols<-brewer.pal(n=5,"Spectral")
+# for(i in 1:length(rand)){
+#   lines((prod_sim[rand[i],1:sim_length]),type="l", col=cols[i])
+# }
+
+
 ## ------------------------- Simulation 1000 years of fuel data based on fuels model -------------------------------------------
 nLocs<-148
 
@@ -77,14 +79,14 @@ for (i in 2:yrs){
 
 
 #look
-par(mfrow=c(1,1))
-sim_length<-200
-plot("n", main="Simulated fuel: \n a*fuel[,t-1] + b*prod[,2] + proc_err", 
-     xlim=c(0,sim_length), ylim=c(0,1000))
-cols<-brewer.pal(n=5,"Spectral")
-for(i in 1:length(rand)){
-  lines((fuel_sim[rand[i],1:sim_length]),type="l", col=cols[i])
-}
+# par(mfrow=c(1,1))
+# sim_length<-200
+# plot(1,col="white," main="Simulated fuel: \n a*fuel[,t-1] + b*prod[,2] + proc_err", 
+#      xlim=c(0,sim_length), ylim=c(0,1000))
+# cols<-brewer.pal(n=5,"Spectral")
+# for(i in 1:length(rand)){
+#   lines((fuel_sim[rand[i],1:sim_length]),type="l", col=cols[i])
+# }
 
 
 ## ------------------------- Independence from original value? -------------------------------------------
@@ -99,14 +101,6 @@ for( i in 1:nrow(fuel_sim)){
   acf_df[i,]<-t(as.vector(acf((tfuel[,i]),lag.max = 21,plot=FALSE)$acf))
 }
 
-
-#look
-plot(x=seq(1,20,1), y=acf_df[1,1:20], ylim=c(-.1,1),type="l", xlab="lag year", ylab="pacf",
-     main="autocorr coef of simulated fuels data over time")
-for(i in 1:nrow(acf_df)){
-  lines(x=seq(1,20,1), y=acf_df[i,1:20],type="l", col=cols[i])
-}
-abline(0.05,0,.05, lty=2)
 
 #save
 png("Supplemental_Info_figs/spin_up_test_figs/autocorrelation_sim_fuels.png")
