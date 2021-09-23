@@ -28,12 +28,22 @@ sample_data<-as.data.frame(dat$samp[row_keeps])
 
 fit1<-readRDS( "model_outputs/fuels_model_ppc.Rds")
 
+png( "Supplemental_Info_figs/alpha_traceplot.png")
+traceplot(fit1, "alpha")
+dev.off()
 
-print(traceplot(fit1, "alpha"))
-print(traceplot(fit1, "beta"))
-print(traceplot(fit1, "sig_o"))
-print(traceplot(fit1, "sig_p"))
-print(traceplot(fit1, "Fvec[33]"))
+png( "Supplemental_Info_figs/beta_traceplot.png")
+traceplot(fit1, "beta")
+dev.off()
+
+png( "Supplemental_Info_figs/sig_o_traceplot.png")
+traceplot(fit1, "sig_o")
+dev.off()
+
+png( "Supplemental_Info_figs/sig_f_traceplot.png")
+traceplot(fit1, "sig_f")
+dev.off()
+
 
 #---------------------------------- check for retrieval, mixing, etc
 print(summary(fit1)[[1]][seq(1,4,1),c(1,3,10)])

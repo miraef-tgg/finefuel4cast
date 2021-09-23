@@ -97,24 +97,24 @@ for ( sim in 1:length(sig_o_vals)) {
   
 }
 
-
-plotCI(sig_o_vals, y=alpha_vec, ui= alpha975_vec, li= alpha025_vec,ylim=c(0,3), col="red", pch=19,
-       main="parameter retrievel with changing sig_o ",
-       xlab="Simulated sig_o parameter", ylab="Model estimates of parameters")
-plotCI(sig_o_vals,  y=beta_vec, ui= beta975_vec, li= beta025_vec,, ylim=c(0,3), col="blue", pch=19, add=T)
-plotCI(sig_o_vals, y=sig_p_vec, ui= sig_p975_vec, li= sig_p025_vec,, ylim=c(0,3), col="purple", pch=19, add=T)
-plotCI(sig_o_vals,  y=sig_o_vec, ui= sig_o975_vec, li= sig_o025_vec,, ylim=c(0,3), col="darkgreen", pch=19, add=T)
-
-legend("topright", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
-       pch=19, col=c("red", "blue", "purple" ,"darkgreen"), title="Model Estimates")
-
-lines(sig_o_vals, rep(alpha_sim,length(sig_o_vals)), ylim=c(0,3), col="red", pch=19)
-lines(sig_o_vals, rep(beta_sim,length(sig_o_vals)), ylim=c(0,3), col="blue", pch=19)
-lines(sig_o_vals, rep(sig_p_sim,length(sig_o_vals)), ylim=c(0,3), col="purple", pch=19)
-lines(sig_o_vals, sig_o_vals, ylim=c(0,3), col="darkgreen", pch=19)
-
-legend("topleft", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
-       lty=1, col=c("red", "blue", "purple" ,"darkgreen"), title="Actual Parameter Values")
+# 
+# plotCI(sig_o_vals, y=alpha_vec, ui= alpha975_vec, li= alpha025_vec,ylim=c(0,3), col="red", pch=19,
+#        main="parameter retrievel with changing sig_o ",
+#        xlab="Simulated sig_o parameter", ylab="Model estimates of parameters")
+# plotCI(sig_o_vals,  y=beta_vec, ui= beta975_vec, li= beta025_vec,, ylim=c(0,3), col="blue", pch=19, add=T)
+# plotCI(sig_o_vals, y=sig_p_vec, ui= sig_p975_vec, li= sig_p025_vec,, ylim=c(0,3), col="purple", pch=19, add=T)
+# plotCI(sig_o_vals,  y=sig_o_vec, ui= sig_o975_vec, li= sig_o025_vec,, ylim=c(0,3), col="darkgreen", pch=19, add=T)
+# 
+# legend("topright", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
+#        pch=19, col=c("red", "blue", "purple" ,"darkgreen"), title="Model Estimates")
+# 
+# lines(sig_o_vals, rep(alpha_sim,length(sig_o_vals)), ylim=c(0,3), col="red", pch=19)
+# lines(sig_o_vals, rep(beta_sim,length(sig_o_vals)), ylim=c(0,3), col="blue", pch=19)
+# lines(sig_o_vals, rep(sig_p_sim,length(sig_o_vals)), ylim=c(0,3), col="purple", pch=19)
+# lines(sig_o_vals, sig_o_vals, ylim=c(0,3), col="darkgreen", pch=19)
+# 
+# legend("topleft", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
+#        lty=1, col=c("red", "blue", "purple" ,"darkgreen"), title="Actual Parameter Values")
 
 #save
 png("Supplemental_Info_figs/simulation_figs/higher_alpha.png")
@@ -196,27 +196,27 @@ for ( sim in 1:length(sig_o_vals)) {
   sig_p975_vec[sim]<-mean(sig_p_975)
 
 }
-
-
-plotCI(sig_o_vals, y=alpha_vec, ui= alpha975_vec, li= alpha025_vec,ylim=c(0,3), col="red", pch=19,
-       main="parameter retrievel with changing sig_o ",
-       xlab="Simulated sig_o parameter", ylab="Model estimates of parameters")
-plotCI(sig_o_vals,  y=beta_vec, ui= beta975_vec, li= beta025_vec,, ylim=c(0,3), col="blue", pch=19, add=T)
-plotCI(sig_o_vals, y=sig_p_vec, ui= sig_p975_vec, li= sig_p025_vec,, ylim=c(0,3), col="purple", pch=19, add=T)
-plotCI(sig_o_vals,  y=sig_o_vec, ui= sig_o975_vec, li= sig_o025_vec,, ylim=c(0,3), col="darkgreen", pch=19, add=T)
-
-legend("topright", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
-       pch=19, col=c("red", "blue", "purple" ,"darkgreen"), title="Model Estimates")
-
-lines(sig_o_vals, rep(alpha_sim,length(sig_o_vals)), ylim=c(0,3), col="red", pch=19)
-lines(sig_o_vals, rep(beta_sim,length(sig_o_vals)), ylim=c(0,3), col="blue", pch=19)
-lines(sig_o_vals, rep(sig_p_sim,length(sig_o_vals)), ylim=c(0,3), col="purple", pch=19)
-lines(sig_o_vals, sig_o_vals, ylim=c(0,3), col="darkgreen", pch=19)
-
-legend("topleft", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
-       lty=1, col=c("red", "blue", "purple" ,"darkgreen"), title="Actual Parameter Values")
-
-alpha_sim=.;beta_sim=.25;sig_p_sim=.6
+# 
+# 
+# plotCI(sig_o_vals, y=alpha_vec, ui= alpha975_vec, li= alpha025_vec,ylim=c(0,3), col="red", pch=19,
+#        main="parameter retrievel with changing sig_o ",
+#        xlab="Simulated sig_o parameter", ylab="Model estimates of parameters")
+# plotCI(sig_o_vals,  y=beta_vec, ui= beta975_vec, li= beta025_vec,, ylim=c(0,3), col="blue", pch=19, add=T)
+# plotCI(sig_o_vals, y=sig_p_vec, ui= sig_p975_vec, li= sig_p025_vec,, ylim=c(0,3), col="purple", pch=19, add=T)
+# plotCI(sig_o_vals,  y=sig_o_vec, ui= sig_o975_vec, li= sig_o025_vec,, ylim=c(0,3), col="darkgreen", pch=19, add=T)
+# 
+# legend("topright", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
+#        pch=19, col=c("red", "blue", "purple" ,"darkgreen"), title="Model Estimates")
+# 
+# lines(sig_o_vals, rep(alpha_sim,length(sig_o_vals)), ylim=c(0,3), col="red", pch=19)
+# lines(sig_o_vals, rep(beta_sim,length(sig_o_vals)), ylim=c(0,3), col="blue", pch=19)
+# lines(sig_o_vals, rep(sig_p_sim,length(sig_o_vals)), ylim=c(0,3), col="purple", pch=19)
+# lines(sig_o_vals, sig_o_vals, ylim=c(0,3), col="darkgreen", pch=19)
+# 
+# legend("topleft", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
+#        lty=1, col=c("red", "blue", "purple" ,"darkgreen"), title="Actual Parameter Values")
+# 
+# alpha_sim=.;beta_sim=.25;sig_p_sim=.6
 
 png("Supplemental_Info_figs/simulation_figs/higher_beta.png")
 plotCI(sig_o_vals, y=alpha_vec, ui= alpha975_vec, li= alpha025_vec,ylim=c(0,3), col="red", pch=19,

@@ -38,7 +38,7 @@ for ( i in 1:length(sig_o_vals)){
 }
 
 
-plot(sig_o_vals, sig_o_trans_vals, ylim=c(0,8000), pch=19)
+# plot(sig_o_vals, sig_o_trans_vals, ylim=c(0,8000), pch=19)
 
 ## run loop with high alpha
 

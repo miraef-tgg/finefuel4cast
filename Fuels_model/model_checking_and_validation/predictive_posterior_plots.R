@@ -89,7 +89,4 @@ plot(-2*loglikdata,-2*loglikrep, ylab="T(Replicated Data|Theta)",xlab="T(Data|Th
 abline(0,1,col="red")
 dev.off()
 
-#look
-plot(-2*loglikdata,-2*loglikrep, ylab="T(Replicated Data|Theta)",xlab="T(Data|Theta)", main="standardized model: log likelihood")
-abline(0,1,col="red")
 

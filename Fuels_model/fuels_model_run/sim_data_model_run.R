@@ -20,7 +20,7 @@ sim_dat<-make_sim_data(  nPlots=198,
                          sig_o=sig_o_sim, #fuel obs error
                          sig_p=sig_p_sim, # process error
                          percent_missing=0,
-                         show_plots=TRUE,
+                         show_plots=FALSE,
                          random=FALSE,
                          alpha=alpha_sim,
                          beta=beta_sim)
@@ -116,7 +116,7 @@ sig_p_025<-quantile(sig_pout,  0.025)
 sig_p<-quantile(sig_pout,  0.5)
 
 
-
+png("Supplemental_Info_figs/simulation_retrieval.png")
 
 plotCI(x=alpha_sim, y=alpha,li=alpha_025, ui=alpha_975, xlim=c(0,3.1), ylim=c(0,3.1), col="red", lwd=3, pch=15,
        main="Parameter Retrieval Simulation", ylab="Fuels Model parameter 95% CI estimate", xlab="known parameter values")
@@ -127,3 +127,4 @@ abline(0,1)
 legend("bottomright", legend=c("carryover (a)", "conversion (b)", "process err (sig_p)","obs err (sig_o)"),
        pch=19, col=c("red", "blue", "purple" ,"darkgreen"))
 
+dev.off()

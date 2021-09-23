@@ -12,6 +12,7 @@ sig_pout<-rstan::extract(fit1, 'sig_p', permuted=F);sig_pout<-apply(sig_pout, 3,
 
 # plots
 par(mfrow=c(1,3))
+png("Supplemental_Info_figs/covariance")
 plot(alphaout, betaout, main=" alpha vs beta")
 plot(alphaout, sig_oout, main=" alpha vs sig_o")
 plot(alphaout, sig_pout, main=" alpha vs sig_p")
