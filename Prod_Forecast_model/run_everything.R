@@ -53,6 +53,11 @@ range(forecast_dat$yr)
 source(file= "running_model_scripts/run_all_models.R")
 gc()
 
+#closer look at our forecast model, creates correlation matrix of weather covariates and .csv of al covarites
+source(file= "running_model_scripts/lm_closer_look.R")
+# browseURL("figures/covariate_correlation.png")
+# print(read.csv("prod_model_outputs/lm_coeffs.csv"))
+
 # Runs the forecast model on all years 1988-2021 and creates point estimates
 source(file= "running_model_scripts/prod_cast_point_estimates.R")
 

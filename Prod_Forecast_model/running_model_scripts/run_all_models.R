@@ -93,14 +93,6 @@ lm_data<-as.data.frame(cbind(Y,X))
 names(lm_data)<-c("z_agb", names(mod_data)[!names(mod_data) %in% c("yr","z_agb")])
 mod_fit<-lm(z_agb~.,data=lm_data) 
 
-
-#coeffs
-names_coefs<-c("int",  names(lm_data))
-names_coefs<-names_coefs[!(names_coefs=="z_agb" | names_coefs=="yr" )]
-lm_coeffs<-as.data.frame(cbind(names_coefs,as.vector(coef(mod_fit)) ))
-# View(lm_coeffs)
-write.csv(lm_coeffs,paste0("prod_model_outputs/", save_name_list[[i]], "_coeffs.csv"), row.names = FALSE)
-
 # making wide format predictions
 lm_preds<-mod_fit$fitted.values
 lm_resids<-mod_fit$residuals

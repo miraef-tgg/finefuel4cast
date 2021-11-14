@@ -29,8 +29,8 @@ file.show("stan_txts/fuels_model_code_annotated.txt")
 #-------------------------- model checking and visualization -----------
 
 # our favorite way to check a model
-# fit1<-readRDS( "model_outputs/fuels_model.rds")
-# shinystan::launch_shinystan(fit1)
+fit1<-readRDS( "model_outputs/fuels_model.rds")
+shinystan::launch_shinystan(fit1)
 
 #traceplots and rhat scores: makes traceplots and prints rhat scores
 source(file= "model_checking_and_validation/convergeance_check.R")
@@ -116,6 +116,7 @@ gc()
 # a quick look using linear regression at how parameter estimates of carryover (a), conversion (b),
 # as well as correlation, r squared, and mean absolute predictive error change by data transformation
 source(file="model_checking_and_validation/transformation_figs.R")
-browseURL("Supplemental_Info_figs/spin_up_test_figs/data_transformation_figs.png")
+# look
+# browseURL("Supplemental_Info_figs/spin_up_test_figs/data_transformation_figs.png")
 
 gc()

@@ -60,9 +60,9 @@ soil_df$z_bulk_dens<-(soil_df$bulk_dens-mean(soil_df$bulk_dens,na.rm=TRUE))/sd(s
 
 table(soil_df$text)
 table(soil_df$text_bin)
-hist(soil_df$z_bulk_dens)
-hist(soil_df$z_ssm)
-hist(soil_df$smp)
+# hist(soil_df$z_bulk_dens)
+# hist(soil_df$z_ssm)
+# hist(soil_df$smp)
 
 
 keeps<-c("z_ssm", "smp", "z_bulk_dens", "text_bin")

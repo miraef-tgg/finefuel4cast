@@ -19,7 +19,7 @@ source(file = "Fine_Fuels_Forecast/predict_latent_fine_fuel.R")
 # make spatial map for latent fine fuels of 2021
 source(file = "Fine_Fuels_Forecast/forecast_2021_map.R")
 #look
-# browseURL("Prod_Forecast_model/Figures/forecast2021.png") 
+# browseURL("Prod_Forecast_model/Figures/forecast2021.png")
 
 # make latent fine fuel time series figures 1998-2021
 source(file = "Fine_Fuels_Forecast/time_series_by_district.R") 

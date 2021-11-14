@@ -1,9 +1,8 @@
-#This combines RAP, spatial, and temporal data csvs and splits, does some seasonal temporal aggregation, and splits dataframes into 1987-2020 and 2021
+# This combines RAP, spatial, and temporal data csvs and splits, does some seasonal temporal aggregation, and splits dataframes into 1987-2020 and 2021
 # changes format from wide to long
 # aggregates monthly weather data to October-march, april and may for precipitation (pr), temperature (tmmx) and vapor pressure deficit (vpd)
 # selects previous  month for ndvi
 # standardizes everything
-# makes a lot of plots to check that my code is doing what I think it is
 
 ## ----------------------------------------------  data + packages ------------------------------------------------
 
@@ -60,17 +59,18 @@ for (i in 35:35){
 
 agb_df<-as.data.frame(new_df)
 names(agb_df)<-c("agb", "prev_agb", "yr", "avg_agb", "sd_agb")
-agb_df$z_agb<-(agb_df$avg_agb-agb_df$agb)/agb_df$sd_agb 
-agb_df$prev_z_agb<-(agb_df$avg_agb-agb_df$prev_agb)/agb_df$sd_agb #right way?
+agb_df$z_agb<-(agb_df$agb-agb_df$avg_agb)/agb_df$sd_agb 
+agb_df$prev_z_agb<-(agb_df$prev_agb-agb_df$avg_agb)/agb_df$sd_agb #right way?
 
 agb_df$yr<-agb_df$yr
 agb_df$prev_z_agb<-agb_df$prev_z_agb
-hist((agb_df$prev_z_agb))
-hist(agb_df$z_agb)
 
-sum(is.infinite(agb_df$z_agb), na.rm=T)
-sum(agb_df$avg_agb==0, na.rm=T)
-
+# check
+par(mfrow=c(1,1))
+# hist((agb_df$prev_z_agb))
+# hist(agb_df$z_agb)
+# sum(is.infinite(agb_df$z_agb), na.rm=T)
+# sum(agb_df$avg_agb==0, na.rm=T)
 # View(agb_df[(nLocs-100):(nLocs+100),])
 # View(agb_df[(nLocs*35-100):(nLocs*35+100),])
 
@@ -100,11 +100,10 @@ for (i in 0:35){
 frac_df<-as.data.frame(frac_df)
 names(frac_df)<-c("prev_afg", "prev_pfg","year")
 
-par(mfrow=c(1,1))
-hist(frac_df$prev_afg)
-hist(frac_df$prev_pfg, add=TRUE, col=rgb(1,0,0,.1))
+#check
+# hist(frac_df$prev_afg)
+# hist(frac_df$prev_pfg, add=TRUE, col=rgb(1,0,0,.1))
 
-unique(frac_df$year)
 ## ---------------------------------------------- pr ------------------------------------------------
 pr_data<-clim
 pr_data<-pr_data[(names(pr_data) %in% c(names(pr_data)[(grepl("pr", names(pr_data)))]))] #just pr
@@ -147,29 +146,22 @@ for (i in 0:35){
 everything_pr_df<-as.data.frame(everything_pr_df)
 names(everything_pr_df)<-c("yr",  "z_pr_april", "z_pr_may","z_pr_june","z_pr_july","z_pr_aug","z_pr_sep",
                            "forecast_pr_april", "forecast_pr_may","forecast_pr_june","forecast_pr_july","forecast_pr_aug","forecast_pr_sep" )
-hist(everything_pr_df$z_pr_april)
-hist(everything_pr_df$z_pr_may)
-hist(everything_pr_df$z_pr_june)
-hist(everything_pr_df$z_pr_july)
-hist(everything_pr_df$z_pr_aug)
-hist(everything_pr_df$z_pr_sep)
-table(everything_pr_df$forecast_pr_april)
-table(everything_pr_df$forecast_pr_may)
-table(everything_pr_df$forecast_pr_june)
-table(everything_pr_df$forecast_pr_july)
-table(everything_pr_df$forecast_pr_aug)
-table(everything_pr_df$forecast_pr_sep)
+
+# check
+# hist(everything_pr_df$z_pr_april)
+# hist(everything_pr_df$z_pr_may)
+# hist(everything_pr_df$z_pr_june)
+# hist(everything_pr_df$z_pr_july)
+# hist(everything_pr_df$z_pr_aug)
+# hist(everything_pr_df$z_pr_sep)
+
 
 #subsetting to oct-march
 keeps<-names(pr_data)[substring(names(pr_data),2,5)%in% c("r_1_","r_2_","r_3_","r_10","r_11","r_12")]
 pr_data<-pr_data[, keeps]
 # View(pr_data)
 pr_data$avg_pr<-rowSums(pr_data, na.rm=TRUE)/35 #avg sum oct-march per year
-dim(pr_data)
 pr_data$avg_pr_annual<-apply(pr_data_all, 1, sum, na.rm=TRUE)/35 #avg sum per year
-
-# pr_data$sd_pr<-apply(pr_data[,1:249], 1, sd, na.rm=TRUE)
-# I *think* I want to sd of current yr sum, so doing later, as vector
 
 yr=1986
 prev_yr<-1985
@@ -187,27 +179,20 @@ for (i in 0:35){
   pr_df[(nLocs*i+1):(nLocs*i+nLocs),5:7]<-as.matrix(prev_df[,4:6])
   pr_df[(nLocs*i+1):(nLocs*i+nLocs),8]<-pr_data$avg_pr
   pr_df[(nLocs*i+1):(nLocs*i+nLocs),9]<-pr_data$avg_pr_annual
-  
-  #oct-oct rain  all months ucrr year EXCEPT oct nov dec
-  # temp_df2<-pr_data_all[, names(pr_data_all) %in% c(names(pr_data_all)[(grepl(as.character(yr), names(pr_data_all)))])]
-  # all_pr_df[(nLocs*i+1):(nLocs*i+nLocs),1:9]<-as.matrix(temp_df2[,1:9]) #jan-oct of cur yr
-  # all_pr_df[(nLocs*i+1):(nLocs*i+nLocs),10:12]<-as.matrix(prev_df[,4:6]) #oct-dec of prev yr
-  # pr_df[(nLocs*i+1):(nLocs*i+nLocs),9]<-mean(all_pr_df[(nLocs*i+1):(nLocs*i+nLocs), 1:12])
-
   yr<-yr+1; prev_yr<-prev_yr+1
 }
 
 pr_df<-as.data.frame(pr_df)
 new_names<-c("yr", c(paste0("cur", c(1,2,3)), c(paste0("prev",c(10,11,12)))), "avg_pr", "avg_annual_pr")
 names(pr_df)<-new_names
-# View(head(pr_df))
 pr_df$cur_pr<-pr_df$prev10 +pr_df$prev11 +pr_df$prev12 + pr_df$cur1 + pr_df$cur2 + pr_df$cur3 
 pr_df$frac_pr=(pr_df$cur1 + pr_df$cur2 + pr_df$cur3)/pr_df$avg_pr
 
-
-range(pr_df$frac_pr, na.rm=TRUE)
-hist(pr_df$frac_pr)
-sum(is.na(pr_df$frac_pr))
+# check
+# View(head(pr_df))
+# range(pr_df$frac_pr, na.rm=TRUE)
+# hist(pr_df$frac_pr)
+# sum(is.na(pr_df$frac_pr))
 
 sd_pr<-vector()
 for (loc in 1:nLocs){
@@ -217,12 +202,14 @@ for (loc in 1:nLocs){
 
 pr_df$sd_pr<-sd_pr
 pr_df$z_pr<-(pr_df$cur_pr-pr_df$avg_pr)/pr_df$sd_pr
-hist(pr_df$z_pr)
 
 
 locs_not_zero<-as.data.frame(cbind(pr_df$sd_pr[1:nLocs],pr_df$avg_pr[1:nLocs]))
 locs_not_zero$cv_pr<-locs_not_zero[,1]/locs_not_zero[,2]
-(mean(locs_not_zero$cv_pr))
+
+#check
+# hist(pr_df$z_pr)
+# (mean(locs_not_zero$cv_pr))
 
 
 ## ---------------------------------------------- tmmx ------------------------------------------------
@@ -266,19 +253,15 @@ for (i in 0:35){
 everything_tmmx_df<-as.data.frame(everything_tmmx_df)
 names(everything_tmmx_df)<-c("yr", "z_tmmx_april", "z_tmmx_may","z_tmmx_june","z_tmmx_july","z_tmmx_aug","z_tmmx_sep",
                              "forecast_tmmx_april", "forecast_tmmx_may","forecast_tmmx_june","forecast_tmmx_july","forecast_tmmx_aug","forecast_tmmx_sep" )
-hist(everything_tmmx_df$z_tmmx_april)  
-hist(everything_tmmx_df$z_tmmx_may)  
-hist(everything_tmmx_df$z_tmmx_june)  
-hist(everything_tmmx_df$z_tmmx_july)  
-hist(everything_tmmx_df$z_tmmx_aug)  
-hist(everything_tmmx_df$z_tmmx_sep)  
 
-table(everything_tmmx_df$forecast_tmmx_april)  
-table(everything_tmmx_df$forecast_tmmx_may)  
-table(everything_tmmx_df$forecast_tmmx_june)  
-table(everything_tmmx_df$forecast_tmmx_july)  
-table(everything_tmmx_df$forecast_tmmx_aug)  
-table(everything_tmmx_df$forecast_tmmx_sep)  
+# check
+# hist(everything_tmmx_df$z_tmmx_april)  
+# hist(everything_tmmx_df$z_tmmx_may)  
+# hist(everything_tmmx_df$z_tmmx_june)  
+# hist(everything_tmmx_df$z_tmmx_july)  
+# hist(everything_tmmx_df$z_tmmx_aug)  
+# hist(everything_tmmx_df$z_tmmx_sep)  
+
 
 #subsetting to oct-march
 keeps<-names(tmmx_data)[substring(names(tmmx_data),4,7)%in% c("x_1_","x_2_","x_3_","x_10","x_11","x_12")]
@@ -320,11 +303,13 @@ for (loc in 1:nLocs){
 
 tmmx_df$sd_tmmx<-sd_tmmx
 tmmx_df$z_tmmx<-(tmmx_df$cur_tmmx-tmmx_df$avg_tmmx)/tmmx_df$sd_tmmx
-hist(tmmx_df$z_tmmx)
 
+
+# check
+# hist(tmmx_df$z_tmmx)
 locs_not_zero<-as.data.frame(cbind(tmmx_df$sd_tmmx[1:nLocs],tmmx_df$avg_tmmx[1:nLocs]))
 locs_not_zero$cv_tmmx<-locs_not_zero[,1]/locs_not_zero[,2]
-(mean(locs_not_zero$cv_tmmx))
+# (mean(locs_not_zero$cv_tmmx))
 
 ## ---------------------------------------------- vpd ------------------------------------------------
 vpd_data<-clim
@@ -360,12 +345,14 @@ for (i in 0:35){
 }
 everything_vpd_df<-as.data.frame(everything_vpd_df)
 names(everything_vpd_df)<-c("yr", "z_vpd_april", "z_vpd_may","z_vpd_june","z_vpd_july","z_vpd_aug","z_vpd_sep" )
-hist(everything_vpd_df$z_vpd_april)  
-hist(everything_vpd_df$z_vpd_may)  
-hist(everything_vpd_df$z_vpd_june)  
-hist(everything_vpd_df$z_vpd_july)  
-hist(everything_vpd_df$z_vpd_aug)  
-hist(everything_vpd_df$z_vpd_sep)  
+
+# check
+# hist(everything_vpd_df$z_vpd_april)  
+# hist(everything_vpd_df$z_vpd_may)  
+# hist(everything_vpd_df$z_vpd_june)  
+# hist(everything_vpd_df$z_vpd_july)  
+# hist(everything_vpd_df$z_vpd_aug)  
+# hist(everything_vpd_df$z_vpd_sep)  
 
 #subsetting to oct-march
 keeps<-names(vpd_data)[substring(names(vpd_data),3,6)%in% c("d_1_","d_2_","d_3_","d_10","d_11","d_12")]
@@ -404,7 +391,7 @@ for (loc in 1:nLocs){
 
 vpd_df$sd_vpd<-sd_vpd
 vpd_df$z_vpd<-(vpd_df$cur_vpd-vpd_df$avg_vpd)/vpd_df$sd_vpd
-hist(vpd_df$z_vpd)
+# hist(vpd_df$z_vpd)
 
 
 locs_not_zero<-as.data.frame(cbind(vpd_df$sd_vpd[1:nLocs],vpd_df$avg_vpd[1:nLocs]))
@@ -452,19 +439,22 @@ for (i in 0:35){
 }
 everything_ndvi_df<-as.data.frame(everything_ndvi_df)
 names(everything_ndvi_df)<-c("yr", "z_ndvi_april", "z_ndvi_may","z_ndvi_june","z_ndvi_july","z_ndvi_aug","z_ndvi_sep" )
-hist(everything_ndvi_df$z_ndvi_april)  
-hist(everything_ndvi_df$z_ndvi_may)  
-hist(everything_ndvi_df$z_ndvi_june)  
-hist(everything_ndvi_df$z_ndvi_july)  
-hist(everything_ndvi_df$z_ndvi_aug)  
-hist(everything_ndvi_df$z_ndvi_sep)  
+
+# check
+# hist(everything_ndvi_df$z_ndvi_april)  
+# hist(everything_ndvi_df$z_ndvi_may)  
+# hist(everything_ndvi_df$z_ndvi_june)  
+# hist(everything_ndvi_df$z_ndvi_july)  
+# hist(everything_ndvi_df$z_ndvi_aug)  
+# hist(everything_ndvi_df$z_ndvi_sep)  
 
 keeps<-names(ndvi_data)[substring(names(ndvi_data),4,7)%in% c("i_2_")]
 ndvi_data<-ndvi_data[,keeps]
 ndvi_data$avg_ndvi=rowMeans(ndvi_data,na.rm=TRUE)
 
-table(is.na(ndvi_data$avg_ndvi))
-range(ndvi_data$avg_ndvi, na.rm=TRUE)
+# check
+# table(is.na(ndvi_data$avg_ndvi))
+# range(ndvi_data$avg_ndvi, na.rm=TRUE)
 
 yr=1986
 ndvi_df<-matrix(NA,nrow=nrow(ndvi_data)*36,ncol=(3))
@@ -492,18 +482,18 @@ for (loc in 1:nLocs){
 
 ndvi_df$sd_ndvi<-sd_ndvi
 ndvi_df$z_ndvi<-(ndvi_df$cur_ndvi-ndvi_df$avg_ndvi)/ndvi_df$sd_ndvi
-hist(ndvi_df$z_ndvi)
 
+# check
+# hist(ndvi_df$z_ndvi)
 locs_not_zero<-as.data.frame(cbind(ndvi_df$sd_ndvi[1:nLocs],ndvi_df$avg_ndvi[1:nLocs]))
 locs_not_zero$cv_ndvi<-locs_not_zero[,1]/locs_not_zero[,2]
-(mean(locs_not_zero$cv_ndvi, na.rm=TRUE))
-(mean(abs(locs_not_zero$cv_ndvi), na.rm=TRUE))
-
-range(ndvi_df$cur_ndvi,na.rm=TRUE)
-range(ndvi_df$avg_ndvi,na.rm=TRUE)
-sum(is.na(ndvi_df$avg_ndvi))
-sum(is.na(ndvi_df$cur_ndvi))
-hist(ndvi_df$z_ndvi)
+# (mean(locs_not_zero$cv_ndvi, na.rm=TRUE))
+# (mean(abs(locs_not_zero$cv_ndvi), na.rm=TRUE))
+# range(ndvi_df$cur_ndvi,na.rm=TRUE)
+# range(ndvi_df$avg_ndvi,na.rm=TRUE)
+# sum(is.na(ndvi_df$avg_ndvi))
+# sum(is.na(ndvi_df$cur_ndvi))
+# hist(ndvi_df$z_ndvi)
 # View(ndvi_df[(nLocs-100):(nLocs+100),])
 
 
@@ -515,11 +505,11 @@ tmmx_df$change_tmmx<-tmmx_df$cur_tmmx-tmmx_df$avg_tmmx
 vpd_df$change_vpd<-vpd_df$cur_vpd-vpd_df$avg_vpd
 ndvi_df$change_ndvi<-ndvi_df$cur_ndvi-ndvi_df$avg_ndvi
 
-
-hist(pr_df$z_pr)
-hist(tmmx_df$z_tmmx)
-hist(vpd_df$z_vpd)
-hist(ndvi_df$z_ndvi)
+# check
+# hist(pr_df$z_pr)
+# hist(tmmx_df$z_tmmx)
+# hist(vpd_df$z_vpd)
+# hist(ndvi_df$z_ndvi)
 
 
 ## ---------------------------------------------- Spat data ------------------------------------------------
@@ -538,7 +528,7 @@ for (yr in 1986:2021){
   count=count+1
 }
 names(spat_df)<-c(names(spat))
-dim(agb_df)
+
 
 ############################################# making 'model_df' #########################
 model_df<-as.data.frame(cbind(spat_df,agb_df, frac_df$prev_afg, frac_df$prev_pfg,
@@ -568,7 +558,8 @@ model_df<-as.data.frame(cbind(spat_df,agb_df, frac_df$prev_afg, frac_df$prev_pfg
 
 
 model_df<-as.data.frame(model_df)
-dim(model_df)
+
+# check
 # View(head(model_df))
 # View(model_df[(nLocs):(nLocs*2+100),]) View(model_df[(nLocs):(nLocs*2+100),])
 
@@ -596,8 +587,6 @@ new_names<-c(names(spat_df), names(agb_df),"prev_afg_frac", "prev_pfg_frac",
 names(model_df)<-new_names
 #reorder
 model_df<-model_df[, c("agb", "prev_agb", "yr", "avg_agb", "sd_agb", "z_agb", "prev_z_agb",
-                       
-# model_df<-model_df[, c("agb", "prev_agb", "yr", "avg_agb", "sd_agb", "prev_z_agb",
                    "prev_afg_frac", "prev_pfg_frac",
                    "cur_pr","avg_pr","change_pr", "z_pr", "pr_frac",
                    "cur_tmmx","avg_tmmx","change_tmmx", "z_tmmx",
@@ -617,17 +606,16 @@ model_df<-model_df[, c("agb", "prev_agb", "yr", "avg_agb", "sd_agb", "z_agb", "p
                    "forecast_tmmx_april","forecast_tmmx_may", "forecast_tmmx_june" ,
                    "forecast_tmmx_july","forecast_tmmx_aug", "forecast_tmmx_sep" 
                    )]
-dim(model_df)
-#make numeric
-# model_df <-as.data.frame(sapply( model_df, as.numeric ))
+
 
 #check
-head(model_df)
-options(scipen = 999)
+# head(model_df)
+# options(scipen = 999)
 model_df_key<-data.frame()
 for (i in 1:ncol(model_df)){
-  print(paste0(names(model_df)[i], " : ", range(model_df[,i], na.rm=TRUE)))
-  print(paste0(names(model_df)[i], " : ", sum(is.na(model_df[,i]))))
+  # check
+  # print(paste0(names(model_df)[i], " : ", range(model_df[,i], na.rm=TRUE)))
+  # print(paste0(names(model_df)[i], " : ", sum(is.na(model_df[,i]))))
   # hist(as.numeric(model_df[,i]), main=names(model_df)[i])
   model_df_key[i,1]<-names(model_df)[i]
   model_df_key[i,2]<-round(min(model_df[,i], na.rm=TRUE),2) 
@@ -645,25 +633,23 @@ model_df_pre2021<-subset(model_df, model_df$yr!=2021)
 model_df_pre2021<-na.omit(model_df_pre2021)
 model_df<-rbind(model_df_pre2021, subset(model_df, model_df$yr==2021))
 
-dim(model_df)
-
 
 # subsetting so prev_agb always available
 model_df2<-subset(model_df, model_df$yr>=1987)
 model_df2$row_keeps<-seq(1:nrow(model_df2))
 
-dim(model_df2)
-(nLocs<-nrow(model_df2)/34) #number of locations
-length(seq(1987,2020,1)) #number of years
-length(unique(paste0(round(model_df2$long,7))))
-length(unique(paste0(round(model_df2$lat,7))))
+#check
+# (nLocs<-nrow(model_df2)/34) #number of locations
+# length(seq(1987,2020,1)) #number of years
+# length(unique(paste0(round(model_df2$long,7))))
+# length(unique(paste0(round(model_df2$lat,7))))
 
 # subsetting to only coords in every year (locs that never had any NAs)
 
 model_df2$long_lat<-paste0(substr(as.character(model_df2$long),0,7),"_",
                            substr(as.character(model_df2$lat),0,6))
 
-length(unique(model_df2$long_lat))
+# length(unique(model_df2$long_lat))
 
 coords<-as.data.frame(cbind(model_df2$yr,paste0(substr(as.character(model_df2$long),0,7),"_",
                                                 substr(as.character(model_df2$lat),0,6))))
@@ -675,14 +661,13 @@ table(counts$n)
 
 coords_keeps<-subset(counts, counts$n==35)
 model_df2<-subset(model_df2, model_df2$long_lat %in% as.vector(coords_keeps$long_lat))
-dim(model_df2)
-nrow(model_df2)/35
+# dim(model_df2)
+# nrow(model_df2)/35
 
 
 # subetting to >100 long term prod 
 model_df2<-subset(model_df2, model_df2$avg_agb>log(100))
-dim(model_df2)
-(nLocs<-nrow(model_df2)/35)
+# (nLocs<-nrow(model_df2)/35)
 
 #coords
 coord_df<-as.data.frame(cbind(model_df2$long, model_df2$lat))[1:nLocs,]
@@ -701,17 +686,12 @@ names(loc_keeps)<-c("long", "lat", "yr", "row_keeps")
 write.csv(loc_keeps,  "prod_model_outputs/loc_keeps.csv")
 
 # names(loc_keeps)<-c("long", "lat", "yr", "row_keeps")
-loc_keeps<-subset(loc_keeps, loc_keeps$yr==1987)
+# loc_keeps<-subset(loc_keeps, loc_keeps$yr==1987)
 # View(loc_keeps)
-nrow(loc_keeps)
-
+# nrow(loc_keeps)
 
 model_df2020<-subset(model_df2, model_df2$yr!=2021)
 model_df2021<-subset(model_df2, model_df2$yr==2021)
-
-unique(model_df2$yr)
-dim(model_df2020)
-dim(model_df2021)
 
 write.csv(model_df2020,"gee_4cast_data/model_csvs/march_all_model_csv.csv", row.names = F)
 write.csv(model_df2021,"gee_4cast_data/model_csvs/march_forecast_2021_csv.csv", row.names = F)

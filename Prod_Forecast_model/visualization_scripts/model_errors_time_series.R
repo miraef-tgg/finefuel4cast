@@ -62,10 +62,10 @@ plot(mape[,5],mape[,1], 'l',ylim=c(.35,1.75),  main= "Mean Absolute Prediction E
      ylab= "Mean Absolute Predictive Error",
      xlab="Year", cex.lab=1.5, cex.axis=1.5) 
 lines(mape[,5],mape[,2], 'l', col="blue",lwd=2)
-lines(mape[,5],mape[,3], 'l', col="red", lwd=2)
-lines(mape[,5],mape[,4], 'l', col="purple",lwd=2)
-legend("topleft", pch=19,legend=c("null model", "forecast", "clim", "clim_and_ndvi"), 
-       col=c("black","blue","red", "purple"), cex=2)
+# lines(mape[,5],mape[,3], 'l', col="red", lwd=2)
+lines(mape[,5],mape[,4], 'l', col="red",lwd=2)
+legend("topleft", pch=19,legend=c("null model", "forecast", "clim_and_ndvi"), 
+       col=c("black","blue","red"), cex=2)
 dev.off()
 
 
