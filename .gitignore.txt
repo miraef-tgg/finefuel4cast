@@ -1,0 +1,4 @@
+*.rds
+*.png
+*.tiff
+*.tif
