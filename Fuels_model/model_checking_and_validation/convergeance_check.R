@@ -40,9 +40,9 @@ png( "Supplemental_Info_figs/sig_o_traceplot.png")
 traceplot(fit1, "sig_o")
 dev.off()
 
-png( "Supplemental_Info_figs/sig_f_traceplot.png")
-traceplot(fit1, "sig_f")
-dev.off()
+#png( "Supplemental_Info_figs/sig_f_traceplot.png")
+#traceplot(fit1, "sig_f")
+#dev.off()
 
 
 #---------------------------------- check for retrieval, mixing, etc
